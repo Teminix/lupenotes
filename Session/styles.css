@@ -1,0 +1,188 @@
+
+
+
+
+/* FONTS START */
+
+@font-face {
+  font-family: PT-mono;
+  src: url("../fonts/pt_mono.ttf");
+}
+
+/*FONTS END */
+
+
+img {
+  width: 150px;
+  height: 150px;
+}
+img#prev {
+  width: 200px;
+  height: 200px;
+  border: white 7px solid;
+}
+.main {
+  background-color: black;
+  padding:20px;
+  color:white;
+  display: inline-block;
+  margin-left: 20%;
+  margin-right: 20%;
+  margin-bottom: 15px;
+  width: 60%;
+  font-family: arial;
+}
+
+button {
+  background-color: rgb(45,45,45);
+  color:white;
+  font-family: PT-mono;
+  border-radius: 0;
+  border:0;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin: 3px 10px;
+  font-size: inherit;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+button:hover {
+  color:black;
+  background-color: rgb(110, 0, 255);
+}
+button a {
+  text-decoration: none;
+  color:inherit;
+  cursor: inherit;
+}
+
+.main span,.div {
+  display: inline-block;
+  margin: 5px;
+  font-size: 25px;
+}
+.main .p {
+  color:red;
+  font-family: PT-mono;
+  font-size: 13px
+}
+.main span input, .div input {
+  font-family: inherit;
+  font-size: inherit;
+  background-color: black;
+  color:white;
+  caret-color: white;
+  border:0;
+  padding-right: 5px;
+  padding-left: 5px;
+  transition: 0.35s;
+}
+.div input {
+  font-family: PT-mono;
+  padding: 10px;
+  padding-bottom: 3px;
+  font-size:15px;
+}
+.div input:focus {
+  border-bottom: rgb(91, 2, 216) solid 4px;
+  background-color: rgb(35,35,35);
+  outline:0;
+}
+
+/* POST BUTTONs START*/
+button[name="reset"], button[name="submitPost"] {
+  float:right;
+  display: inline-block;
+}
+button[purpose='post'] {
+  float: right;
+}
+
+/* TEXT AREA STUFF*/
+
+textarea {
+  width: 100%;
+  resize: none;
+  color:white;
+  background-color: rgb(35,35,35);
+  caret-color: white;
+  padding:5px;
+  transition: 0.4s;
+  border:none;
+  font-family: PT-mono;
+}
+textarea::placeholder {
+  color:gray;
+}
+textarea:focus {
+  border-bottom: white solid 4px;
+  outline:0;
+}
+textarea.title {
+  font-size: 25px;
+}
+textarea.postContent {
+  min-height: 100px;
+  height: auto;
+  font-size: 13px;
+}
+textarea[readonly]{
+  background-color: black;
+}
+
+
+
+/* TEXT AREA STUFF END*/
+
+/* SPAN CLASSED/IDS START */
+span.title {
+  color:white;
+  font-family: PT-mono;
+  font-size: 25px;
+}
+
+
+
+
+
+
+
+
+/* SPAN CLASSED/IDS END */
+
+
+/*modal stuff*/
+
+
+.modal {
+  display: none;
+  background-color: rgba(0,0,0,0.6);
+  width:100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  overflow: auto
+}
+
+.content {
+  display: block;
+  margin: 20% auto;
+  padding: 20px;
+  width: 25%;
+  background-color:rgb(0, 0, 0);
+  color:white;
+  font-family: PT-mono;
+}
+
+.content form {
+  font-size: 20px
+}
+.content .pr {
+  color: red;
+  font-size: 15px;
+}

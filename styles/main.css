@@ -1,0 +1,102 @@
+
+
+a {
+  text-decoration: none;
+  color:blue;
+  display: inline-block;
+  transition: 0.4s;
+}
+a:hover {
+  color:lightblue;
+  transform: scale(1.1);
+}
+
+/* DIVS START */
+
+
+
+div#status {
+  color:red;
+  font-size: 15px;
+}
+
+/* DIVS END */
+
+/* FORMS START */
+form { //form
+  display: inline-block;
+  background-color:black;
+  color:white;
+  font-family: arial;
+  padding:10px;
+  width:20%;
+}
+form input { //input
+  color:white;
+  background-color: rgba(16,16,16,0.45);
+  margin-top:10px;
+  margin-bottom: 10px;
+  border:0;
+  padding:4px;
+  caret-color: white;
+  transition: 0.45s;
+}
+form input[type="text"], form input[type="password"] {
+  color:white;
+  padding:8px;
+}
+form input[type="text"]:focus, form input[type="password"]:focus {
+  outline:0;
+  border-bottom: white 3px solid;
+  transform: scale(1.1)
+}
+form button {
+  color:white;
+  background-color: red;
+  cursor: pointer;
+  transition: 0.5s;
+  padding-left: 20px;
+  padding-right: 20px;
+  border:0;
+}
+form button:hover {
+  background-color: yellow;
+  color:black;
+  transform: scale(1.2);
+}
+
+
+/* FORMS END */
+
+
+/* MISCELLANEOUS TAGS START */|
+
+/* MISCELLANEOUS TAGS END */|
+/* HEADERS START */
+
+h1 {
+  font-family: arial;
+  color:white
+}
+h2 {
+  font-family: arial;
+  color:white
+}
+h3 {
+  font-family: arial;
+  color:white
+}
+h4 {
+  font-family: arial;
+  color:white
+}
+h5 {
+  font-family: arial;
+  color:white
+}
+h6 {
+  font-family: arial;
+  color:white
+}
+
+/* HEADERS START */
