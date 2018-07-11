@@ -39,6 +39,7 @@ foreach ($dir as $file) {
      <meta charset="utf-8">
      <title><?php echo $usr ?>'s Profile</title>
      <link rel="stylesheet" href="../Session/styles.css">
+     <script src="http://projhost:8088/scripts/js/main.js" charset="utf-8"></script>
    </head>
    <body>
      <div class="main">
@@ -49,5 +50,34 @@ foreach ($dir as $file) {
      <span>Username: <input type="text" name="usr" value="<?php echo $usr; ?>" readonly> </span> <br>
      <span>Display name: <input type="text" name="display" value="<?php echo $row['display']; ?>" readonly> </span><br><br>
    </div>
+   <div class="main">
+   <?php
+      $conn_posts = new mysqli($HOSTNAME,$DBUSER,$DBPASS,"project");
+      $query = "SELECT * FROM posts WHERE usr='$usr'";
+      $res = $conn_posts->query($query);
+      while ($row = $res->fetch_assoc()) {
+        $title = $row["title"];
+        $content = $row["content"];
+        $rep = $row["reputation"];
+        $id = $row["ID"];
+        echo
+        "<div class='post' post-id='$id'>
+          <textarea readonly name='title' class='title' rows='1'>$title</textarea><br><br>
+          <textarea class='postContent' name='content' readonly>$content</textarea>
+          <div class='vote-section' voted='0'>
+            <button class='upvote' onclick='vote(this,\"up\")'>
+              <img src='../images/up.png' class='button'>
+            </button>
+            <p class='score'>$rep</p>
+            <button class='downvote' onclick='vote(this,\"down\")'>
+              <img src='../images/down.png' class='button' >
+            </button>
+          </div>
+        </div>";
+      }
+
+    ?>
+  </div>
+    <!-- Hello-->
    </body>
  </html>

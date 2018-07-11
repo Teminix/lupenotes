@@ -1,12 +1,6 @@
 <?php
 
  ?>
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -26,7 +20,7 @@
             data:{ usr:user,display:displayName,pwd:pass,type:subtype },
             success: function(data) {
               if (data == "0") {
-                window.location.href = "Session/session.php";
+                window.location.href = "Session/main.php";
               }
               else {
               $("#status").html(data);}

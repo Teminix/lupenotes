@@ -1,14 +1,25 @@
 <?php
 session_start();
 
-$dir = scandir(".");
-$dir = array_diff($dir,[".","..","index.php",".DS_Store"]);
+$dir = scandir("."); //scans the directory
+$dir = array_diff($dir,[".","..","index.php",".DS_Store"]); // remove . .. index.php and .DS_Store
 $dir_raw = "[";
 foreach ($dir as $file) {
   $file_handle = fopen($file,"w");
   $temp_file = file_get_contents("../temps/user-template.txt");
   fwrite($file_handle,$temp_file);
   fclose($file_handle);
+}
+$conn = new mysqli("localhost","root","root","project");
+$res = $conn->query("SELECT * FROM users");
+$usr_array  = array();
+while ($row = $res->fetch_assoc()) {
+  array_push($usr_array,$row["usr"]);
+}
+foreach ($dir as $file) {
+  if (!in_array(basename($file,".php"),$usr_array)) {
+    unlink($file);
+  }
 }
  ?>
 <!DOCTYPE html>

@@ -1,7 +1,7 @@
 <?php
 
-// Link with include: include __DIR__."/php/lib.php;
-// Link with require: require __DIR__."/php/lib.php;
+// Link with include: include 'http://projhost:8088/php/lib.php';
+// Link with require: require 'http://projhost:8088/php/lib.php';
 function getfname($suff = ""){
   return basename(__FILE__,$suff);
 }
@@ -33,18 +33,5 @@ function arraytostr($array,$div = ",") {
     $string = $string.$key.$div;
   }
   return substr_replace($string,"","-1");
-}
-function strtoarray($string) {
-  $array = array();
-  for ($i=0; $i < strlen($string); $i++) {
-    array_push($array,$string[$i]);
-  }
-  return $array;
-}
-function concat_array($array,$concat) {
-  foreach ($concat as $key) {
-    array_push($array,$key);
-  }
-  return $array;
 }
  ?>

@@ -1,5 +1,6 @@
 <?php
 session_start();
+include "../php/lib.php";
 if(!(isset($_SESSION["usr"]) == "TRUE" || isset($_SESSION["display"]) == "TRUE")) {
   header("location:../index.php");
 }
@@ -15,152 +16,13 @@ else {
     <title>Your Profile</title>
     <link rel="stylesheet" href="styles.css">
     <script src="../scripts/Libraries/jquery.js" charset="utf-8"></script>
-    <script type="text/javascript">
-      function keyDown(event, keycode, func) {
-        if (event.keyCode == keycode){func};
-      };
-      function changePass() { // Create a function to change the pasword or post the new password
-          var old_pass = document.getElementsByName("password")[0].value; // old password
-          var new_pass = document.getElementsByName("password")[1].value; // new password
-          var prompts = document.getElementsByClassName("pr");
-          $.ajax ({ // ajax call the information
-            type:"POST",
-            url:"changes.php",
-            data: {op:old_pass,np:new_pass,type:"password"}, // The type of the call is password
-            success: function (data) { // on success
-              if (data == "1") { // if the data was valid and the password met conditions:
-                modal[1].style.display = "none"; // close modal
-                window.location.reload(true); // reload window
-              }
-              else {
-                prompts[1].innerHTML = data; // otherwise inform the userof the error
-              }
-            },
-            error: function () {
-              prompts[1].innerHTML = "Some error occured in trying to change your password"; // An error message to be displayed
-            }
-          });
+    <script type="text/javascript" src="http://projhost:8088/scripts/js/main.js">
 
-      }
-      function changeUsr() { //function to change the username or display name
-        //Get the data:
-          var user = document.getElementById("usr").value;
-          var displayName = document.getElementById("display").value;
-          var pass = document.getElementById("pass").value;
-          $.ajax({ // Make an ajax call with the data
-            type:"POST",
-            url:"changes.php",
-            data: { usr:user,display:displayName,pwd:pass,type:"username" },
-            success: function (data) {
-              if (data == "1") {
-                modal[0].style.display="none";
-                window.location.reload(true);
-              }
-              else {
-                document.getElementsByClassName('pr')[0].innerHTML = data;
-              }
-            },
-            error: function() {
-              document.getElementsByClassName('pr')[0].innerHTML = "Some error occured in the server";
-            }
-          });
-
-      }
-      function resetVal(array) { // define the elements to have their value reset
-        for (i=0;i<array.length;i++) {
-          array[i].value = "";
-        }
-      }
-      function post(path,element) { // create a posting function for convenience
-        var form = element.parentNode;
-        var dict = {type:"createPost"};
-        for (i=0;i<form.children.length;i++) {
-          if (form.children[i].tagName == "TEXTAREA" || form.children[i] =="INPUT") {
-            dict[form.children[i].name] = form.children[i].value; // add a key to the dictionary which is the child's name and the dict value as the child's input value
-          }
-          else if (form.children[i].getAttribute("class") == "p") {
-            var prompt = form.children[i];
-          }
-        }//console.log(dict)
-        $.ajax({ // Post the data in an ajax call
-          type: "POST",
-          url: path,
-          data: dict, // the data is  the dictionary we made of the data that needs to be posted
-          success: function (data) {
-            if (data == "1") {
-              console.log("successfully posted");
-            }
-            else {
-              prompt.innerHTML = data;
-            }
-          },
-          error: function() {
-            console.log("Some error has ocurred for some enigmatic reason lol"); // Due to any error, log An error
-          }
-        });
-      }
-      function makeEdit(elem) { // Make changes to the post
-        var parent = elem.parentNode; // Grab the parent Node of the target element
-        for (i=0;i<parent.children.length;i++) {
-          if (parent.children[i].tagName == "TEXTAREA") {
-            elem.parentNode.children[i].removeAttribute("readonly");
-          }
-        }
-        elem.innerHTML = "Save"; // Change the innerHTML to 'Save'
-        elem.setAttribute("onclick","makeRead(this)"); // Add a new onclick event
-      }
-      function makeRead(elem) { // Save changes for the post
-        var parent = elem.parentNode;
-        var post_id = parent.getAttribute("post-id");
-        var dict = {type:"editPost",pid:post_id};
-        for (i=0;i<parent.children.length;i++) {
-          if (parent.children[i].tagName == "TEXTAREA") {
-            dict[parent.children[i].name] = parent.children[i].value;
-            parent.children[i].setAttribute("readonly","readonly");
-          }
-          else if (parent.children[i].getAttribute("class") == "p") {
-            var prompt = parent.children[i];
-          }
-        }
-        //console.log(dict);
-        elem.innerHTML = "Edit";
-        elem.setAttribute("onclick","makeEdit(this)");
-        $.ajax({
-          type:"POST",
-          url:"post.php",
-          data:dict,
-          success: function (data){
-            if(data=="1") {
-              console.log("Editing post sucessful of id: "+post_id);
-            }
-            else {
-            prompt.innerHTML = data}
-          },
-          error: function() {
-            prompt.innerHTML = "Some error occured during diting you post";
-          }
-        });
-      }
-      function deletePost(elem) {
-        var parent = elem.parentNode;
-        var id = parent.getAttribute("post-id");
-        parent.parentNode.removeChild(parent);
-        $.ajax({
-          type:"POST",
-          url:"post.php",
-          data: {type:"delPost",pid:id},
-          success: function () {
-            console.log("deleted post successfully with id: "+id);
-          },
-          error: function () {
-            console.log("Some error occured in the process of deleting post id: "+id)
-          }
-        });
-      }
     </script>
   </head>
   <body>
     <div class="main">
+      <div>
       <?php
       $conn = new mysqli("localhost","root","root","project");
       $res = $conn->query("SELECT * FROM users WHERE usr='".$_SESSION["usr"]."'");
@@ -175,36 +37,47 @@ else {
     <button type="button" name="pass" class="edit">Change Password</button> <!-- Second edit button -->
     <button type="button" name="profile">Change profile picture</button>
   </div>
-  <div class="main"> <!-- POST FORM/DIV -->
+  <div class="post"> <!-- POST FORM/DIV -->
     <form>
       <span class="title">Write a post:</span><br>
       <textarea name="title" class="title" rows="1" placeholder="Title of Post"></textarea><br><br>
       <textarea name="content" rows="8" cols="80" placeholder="Content of the post.."></textarea>
       <span class="p"></span>
-      <button type="button" name="submitPost" onclick="post('post.php',this);window.location.reload(true)">POST</button>
+      <button type="button" name="submitPost" onclick="post('post.php',this)">POST</button>
       <button type="button" name="reset" onclick="resetVal([this.parentNode.children[4],this.parentNode.children[8]])">CANCEL</button>
     </form>
   </div>
   <?php
     $conn = new mysqli("localhost","root","root","project");
-    $query = "SELECT * FROM posts WHERE usr='".$usr."'";
+    $query = "SELECT * FROM posts WHERE usr='$usr' ORDER BY id DESC";
     $res = $conn->query($query);
     while ($row= $res->fetch_assoc()) {
       $title = $row["title"];
       $content = $row["content"];
+      $rep = $row["reputation"];
       $id = $row["ID"];
       echo
-      "<div class='main' post-id='$id'>
+      "<div class='post' post-id='$id'>
         <textarea readonly name='title' class='title' rows='1'>$title</textarea><br><br>
         <textarea class='postContent' name='content' readonly>$content</textarea>
         <span class='p'></span>
         <button type='button' purpose='post' name='edit' onclick='makeEdit(this)'>Edit</button>
         <button type='button' purpose='post' onclick='deletePost(this)'>Delete</button>
+        <div class='vote-section' voted='0'>
+          <button class='upvote' onclick='vote(this,\"up\")'>
+            <img src='../images/up.png' class='button'>
+          </button>
+          <p class='score'>$rep</p>
+          <button class='downvote' onclick='vote(this,\"down\")'>
+            <img src='../images/down.png' class='button' >
+          </button>
+        </div>
       </div>
 
       ";
     }
    ?>
+ </div>
   <div class="modal"> <!-- MODAL DIVISION 1: FOR CHANGIN USERNAME AND DISPLAY NAME-->
     <div class="content">
       <form>
@@ -238,7 +111,7 @@ else {
       <form action="changes.php" method="POST" enctype="multipart/form-data">
         Change profile picture:<br><br>
           <input type="file" accept="image/*" name="fileupload"><br><br>
-          <img id="prev"><br><br>
+          <img id="prev" src='preview.png'><br><br>
           <span class="pr"></span>
           <button type="button" name="clear">Reset Picture</button><br>
           <button type="button" class="cancel">Cancel</button>
@@ -246,6 +119,7 @@ else {
     </form>
     </div>
   </div>
+
     <script type="text/javascript">
 
 

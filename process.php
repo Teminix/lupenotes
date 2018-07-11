@@ -1,23 +1,32 @@
 <?php
+
+require __DIR__."/php/lib.php";
 session_start();
 $prompt = "prompt"; //Set the prompt variable
+$rescharset = array("form" =>concat_array(strtoarray("{}[]:;|\\<>?,./!@#$%^&*()"),["'",'"']));
+
+
 if(!$_SERVER['REQUEST_METHOD']=="POST") { //if method is not a post
   header("location:index.php");
 }
 if ($_SERVER['REQUEST_METHOD'] == "POST") { // if method is post
   $type = $_POST["type"]; // declare submission type var as $type
   if ($type == "register") {// if type = register
-    $usr = addslashes($_POST["usr"]); // receive variable 'usr'
-    $display = addslashes($_POST["display"]); // receive variable 'display'
-    $pwd  = addslashes($_POST["pwd"]);//  receive variable 'pwd'
+    $conn = new mysqli("localhost","root","root","project"); // use OOP style to establish connection;
+    $usr = mysqli_real_escape_string($conn,$_POST["usr"]); // receive variable 'usr'
+    $display = mysqli_real_escape_string($conn,$_POST["display"]); // receive variable 'display'
+    $pwd  = mysqli_real_escape_string($conn,$_POST["pwd"]);//  receive variable 'pwd'
     if (strlen($usr) < 6 || strlen($display) < 6 || strlen($pwd) < 6) { // if Character expectation less then:
       echo "Username, display and password must be at least 6 characters";
     }
     elseif (strlen($usr) > 20 || strlen($display) > 20 || strlen($pwd) > 20) {
       echo "Username, display and password cannot exceed more than 20 characters";
       }
+    elseif (rescharstr($usr,$rescharset["form"]) == "TRUE" || rescharstr($display,$rescharset["form"]) == "TRUE") {
+      echo "You are not allowed to use characters: '".arraytostr($rescharset["form"],"', '");
+    }
     else { // otherwise:
-      $conn = new mysqli("localhost","root","root","project"); // use OOP style to establish connection;
+
       $query = "SELECT * FROM users WHERE usr='$usr'";
       $res = $conn->query($query); // Query the $query variable
       $check = $res->num_rows; // Calculate number of received rows as $check
