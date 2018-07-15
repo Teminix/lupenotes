@@ -28,6 +28,7 @@
         if((strlen($new_user) < 6 || strlen($new_display) < 6) || (strlen($new_user) > 20 || strlen($new_display) > 20)) {
           echo "New Username and display name must be at least 6 characters and at max 20 characters";
         }
+
         else {
           $new_user_check = $conn->query("SELECT * FROM users WHERE NOT ID='$id' AND usr='$new_user'");
           $new_user_check = $new_user_check->num_rows;
@@ -56,13 +57,19 @@
         $pass = $row["pwd"];
         $new_pass = $_POST["np"];
         if (!($_POST["op"] == $pass)) {
-          echo "Incorrect password, try again";
+          echo "Incorrect password(s), try again";
         }
         else {
-          if (strlen($new_pass) < 6 || strlen($new_pass) > 20 ){echo "Password must be at least 6 characters and most 20 characters";}
+          if ($_POST["np"] == $_POST["vp"]) {
+            if (strlen($new_pass) < 6 || strlen($new_pass) > 20 ){echo "Password must be at least 6 characters and most 20 characters";}
+            else {
+            $conn->query("UPDATE users SET pwd='$new_pass' WHERE ID=".$row["ID"]);
+            echo "1";}
+          }
           else {
-          $conn->query("UPDATE users SET pwd='$new_pass' WHERE ID=".$row["ID"]);
-          echo "1";}
+            echo "The verified password and the new password must be the same";
+          }
+
         }
       }
       elseif ($_POST["type"] == "profile") {

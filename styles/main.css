@@ -1,5 +1,7 @@
 
-
+:root {
+  --sexy-purple:rgb(91, 2, 216)
+}
 a {
   text-decoration: none;
   color:blue;
@@ -11,6 +13,20 @@ a:hover {
   transform: scale(1.1);
 }
 
+
+
+/* FONTS START */
+
+@font-face {
+  font-family: PT-mono;
+  src: url("http://projhost:8088/fonts/pt_mono.ttf");
+}
+
+
+
+
+/* FONTS END */
+
 /* DIVS START */
 
 
@@ -19,6 +35,34 @@ div#status {
   color:red;
   font-size: 15px;
 }
+div.nav {
+  display: block;
+  background-color: black;
+  overflow:hidden;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-right:10px;
+  padding-left:10px;
+}
+div.nav .nav-item {
+  color:white;
+  display: inline-block;
+  float:left;
+  font-family: PT-mono;
+  padding-right: 10px;
+}
+div.nav .nav-item a {
+  color:inherit;
+  padding-top: 10px;
+  padding-bottom:10px;
+  transform:none;
+}
+div.nav .nav-item a:hover {
+  background-color:var(--sexy-purple);
+  color:black;
+  transform:none;
+}
+
 
 /* DIVS END */
 
@@ -30,6 +74,7 @@ form { //form
   font-family: arial;
   padding:10px;
   width:20%;
+  overflow:scroll;
 }
 form input { //input
   color:white;
@@ -99,4 +144,4 @@ h6 {
   color:white
 }
 
-/* HEADERS START */
+/* HEADERS END */

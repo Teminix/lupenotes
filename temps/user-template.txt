@@ -20,7 +20,7 @@ $conn = new mysqli($HOSTNAME,$DBUSER,$DBPASS,$DBNAME);
 $res = $conn->query("SELECT * FROM users WHERE usr='$usr'");
 $row = $res->fetch_assoc();
 $dir = scandir(".");
-$dir = array_diff($dir,[".","..","index.php",".DS_Store"]);
+$dir = array_diff($dir,[".","..","index.php",".DS_Store",".gitignore"]);
 $dir_raw = "[";
 foreach ($dir as $file) {
   $file_handle = fopen($file,"w");
@@ -40,6 +40,7 @@ foreach ($dir as $file) {
      <title><?php echo $usr ?>'s Profile</title>
      <link rel="stylesheet" href="../Session/styles.css">
      <script src="http://projhost:8088/scripts/js/main.js" charset="utf-8"></script>
+
    </head>
    <body>
      <div class="main">
@@ -60,11 +61,25 @@ foreach ($dir as $file) {
         $content = $row["content"];
         $rep = $row["reputation"];
         $id = $row["ID"];
+        $rep_vote = $row['votes'];
+        eval("\$rep_array = array($rep_vote);");
+        // $rep_array = arraytostr($rep_array);
+        if(array_key_exists($_SESSION["usr"],$rep_array)){
+          if($rep_array[$_SESSION["usr"]] == "d"){
+            $vote_type="down";
+          }
+          elseif ($rep_array[$_SESSION["usr"]] == "u") {
+            $vote_type = "up";
+          }}
+        else {
+          $vote_type = "0";
+        }
+        if (isset($_SESSION["usr"])) {
         echo
         "<div class='post' post-id='$id'>
           <textarea readonly name='title' class='title' rows='1'>$title</textarea><br><br>
           <textarea class='postContent' name='content' readonly>$content</textarea>
-          <div class='vote-section' voted='0'>
+          <div class='vote-section' voted='$vote_type'>
             <button class='upvote' onclick='vote(this,\"up\")'>
               <img src='../images/up.png' class='button'>
             </button>
@@ -73,11 +88,25 @@ foreach ($dir as $file) {
               <img src='../images/down.png' class='button' >
             </button>
           </div>
-        </div>";
+        </div>";}
+        else {
+          echo
+          "<div class='post' post-id='$id'>
+            <textarea readonly name='title' class='title' rows='1'>$title</textarea><br><br>
+            <textarea class='postContent' name='content' readonly>$content</textarea>
+          </div>";
+        }
       }
 
     ?>
   </div>
     <!-- Hello-->
    </body>
+   <script type="text/javascript">
+   var div = document.getElementsByClassName("main")[1];
+   if(div.innerHTML.trim() == "") {
+     div.parentElement.removeChild(div);
+   }
+   init_vote();
+   </script>
  </html>

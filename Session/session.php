@@ -56,6 +56,19 @@ else {
       $content = $row["content"];
       $rep = $row["reputation"];
       $id = $row["ID"];
+      $rep_vote = $row['votes'];
+      eval("\$rep_array = array($rep_vote);");
+      // $rep_array = arraytostr($rep_array);
+      if(array_key_exists($_SESSION["usr"],$rep_array)){
+        if($rep_array[$_SESSION["usr"]] == "d"){
+          $vote_type="down"; // if the user has already downvoted the post then make the div downvoted
+        }
+        elseif ($rep_array[$_SESSION["usr"]] == "u") {
+          $vote_type = "up"; // if the user has already upvoted the post then make the div upvoted
+        }}
+      else {
+        $vote_type = "0";
+      }
       echo
       "<div class='post' post-id='$id'>
         <textarea readonly name='title' class='title' rows='1'>$title</textarea><br><br>
@@ -63,7 +76,7 @@ else {
         <span class='p'></span>
         <button type='button' purpose='post' name='edit' onclick='makeEdit(this)'>Edit</button>
         <button type='button' purpose='post' onclick='deletePost(this)'>Delete</button>
-        <div class='vote-section' voted='0'>
+        <div class='vote-section' voted='$vote_type'>
           <button class='upvote' onclick='vote(this,\"up\")'>
             <img src='../images/up.png' class='button'>
           </button>
@@ -100,6 +113,8 @@ else {
         Change Password:<br><br>
         <span class="div"><input type="password" name="password" placeholder="Old password" onkeypress="if(event.keyCode ==13){changePass()}"> </span><br><br>
         <span class="div"><input type="password" name="password" placeholder="New password" onkeypress="if(event.keyCode ==13){changePass()}"> </span><br><br>
+        <span class="div"><input type="password" name="password" placeholder="Verify password" onkeypress="if(event.keyCode ==13){changePass()}"> </span><br><br>
+
         <span class="pr"></span><br><br>
         <button type="button" class="cancel">Cancel</button><!-- Second cancel button-->
         <button type="button" class="verify">Change password</button> <!-- Second verify button-->
@@ -179,7 +194,7 @@ else {
           }
         });
       }
-
+      init_vote();
 
 
     </script>

@@ -34,11 +34,12 @@ function keyDown(event, keycode, func) {
 function changePass() { // Create a function to change the pasword or post the new password
     var old_pass = document.getElementsByName("password")[0].value; // old password
     var new_pass = document.getElementsByName("password")[1].value; // new password
+    var ver_pass = document.getElementsByName("password")[2].value;
     var prompts = document.getElementsByClassName("pr");
     $.ajax ({ // ajax call the information
       type:"POST",
       url:"changes.php",
-      data: {op:old_pass,np:new_pass,type:"password"}, // The type of the call is password
+      data: {op:old_pass,np:new_pass,vp:ver_pass,type:"password"}, // The type of the call is password
       success: function (data) { // on success
         if (data == "1") { // if the data was valid and the password met conditions:
           modal[1].style.display = "none"; // close modal
@@ -196,7 +197,7 @@ function vote(elemnt,vote_type) { // the vote function that needs to be utilised
         $.ajax({
           type:"POST",
           url:post_dir,
-          data:{type:"vote",value:"downvote",pid:post_id},
+          data:{type:"vote",value:"neutralise",direction:"down",pid:post_id},
           success:function(data){console.log(data)},
           error: function() {console.log("error in upvoting post id: "+post_id)}
         });
@@ -240,7 +241,7 @@ function vote(elemnt,vote_type) { // the vote function that needs to be utilised
       $.ajax({
         type:"POST",
         url:post_dir,
-        data:{type:"vote",value:"upvote",pid:post_id},
+        data:{type:"vote",value:"neutralise",direction:"up",pid:post_id},
         success:function(data){console.log(data)},
         error: function() {console.log("error in upvoting post id: "+post_id)}
       });
@@ -263,4 +264,24 @@ function vote(elemnt,vote_type) { // the vote function that needs to be utilised
         }
     }
 
+}
+
+function init_vote() {
+  var divs = document.getElementsByClassName('vote-section');
+  for (var i = 0; i < divs.length; i++) {
+    var button1 = divs[i].children[0];
+    var img = button1.children[0];
+    var button2 = divs[i].children[2];
+    var img2 = button2.children[0];
+    if (divs[i].getAttribute("voted") == "up") {
+      button1.setAttribute("style","background-color:#6e00ff")
+      img.setAttribute("src","../images/upfilled.png");
+
+    }
+    else if (divs[i].getAttribute("voted") == "down") {
+      button2.setAttribute("style","background-color:#ff0000")
+      img2.setAttribute("src","../images/downfilled.png");
+
+    }
+  }
 }

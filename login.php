@@ -37,6 +37,14 @@
   </head>
   <body>
     <center>
+      <div class="nav">
+        <div class="nav-item">
+          <a href="users/">USERS</a>
+        </div>
+        <div class="nav-item">
+          <a href="index.php">REGISTER</a>
+        </div>
+      </div>
       <form id="form">
         <center>
           Login now!<br><br>

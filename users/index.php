@@ -1,8 +1,7 @@
 <?php
 session_start();
-
 $dir = scandir("."); //scans the directory
-$dir = array_diff($dir,[".","..","index.php",".DS_Store"]); // remove . .. index.php and .DS_Store
+$dir = array_diff($dir,[".","..","index.php",".DS_Store",".gitignore"]); // remove . .. index.php and .DS_Store
 $dir_raw = "[";
 foreach ($dir as $file) {
   $file_handle = fopen($file,"w");
@@ -29,12 +28,10 @@ foreach ($dir as $file) {
     <title>User list</title>
     <style media="screen">
       /* FONTS BEGIN */
-
       @font-face {
         font-family:PT-mono;
         src: url("../fonts/pt_mono.ttf");
       }
-
       /* FONTS END */
       .users {
         margin-right: 25%;
@@ -68,7 +65,6 @@ foreach ($dir as $file) {
         font-size: 13px;
         color:gray;
         transition:0.3s;
-
       }
       span.display {
         font-size: 20px;
@@ -86,9 +82,7 @@ foreach ($dir as $file) {
       .user:hover span.usr {
         color:black;
         font-weight: 400;
-
       }
-
       h1 {
         color:white;
         background-color: black;

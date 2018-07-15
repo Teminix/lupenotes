@@ -29,8 +29,8 @@ function absolutepath($rel_path){
 }
 function arraytostr($array,$div = ",") {
   $string = '';
-  foreach ($array as $key) {
-    $string = $string.$key.$div;
+  foreach ($array as $key => $value) {
+    $string = $string."'".$key."'=>'".$value."'".$div;
   }
   return substr_replace($string,"","-1");
 }

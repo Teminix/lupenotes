@@ -70,42 +70,63 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     $row = $res->fetch_assoc();
     $rep = $row["reputation"];
     $oldrep = $row["reputation"];
+    $votes = $row["votes"]; // Get the votes data
+    eval("\$vote_array = array($votes);"); // translate that data into an array
     // echo $rep."/n";
     // echo $oldrep;
 
     if ($value == "upvote") { // if the post vote/reputation is incremented
-      $rep = $rep + 1;
-      $conn->query("UPDATE posts SET reputation='$rep' WHERE ID='$postid'");
-      echo "Successfully upvoted on the post with id: ".$postid."\nold reputation: ".$oldrep.", new reputation:$rep";
+      if (isset($vote_array[$_SESSION['usr']]) && $vote_array[$_SESSION["usr"]] =="u") { // checks if the user has already voted in this direction
 
+        echo "Upvoting failed to execute";
+        }
+      else {
+        $vote_array[$_SESSION["usr"]]='u';
+        echo arraytostr($vote_array);
+        $votes = arraytostr($vote_array);
+        $rep = $rep + 1;
+        $conn->query('UPDATE posts SET reputation="'.$rep.'",votes="'.$votes.'" WHERE ID="'.$postid.'"');
+        //echo "Successfully upvoted on the post with id: ".$postid."\nold reputation: ".$oldrep.", new reputation:$rep, vote token: $votes";
+      }
     }
     elseif ($value == "downvote") { // if the post vote/reputation is decremented
-      $rep = $rep - 1;
-      $conn->query("UPDATE posts SET reputation='$rep' WHERE ID='$postid'");
-      echo "Successfully downvoted on the post with id: ".$postid."\nold reputation: ".$oldrep.", new reputation:$rep";
-
+      if (isset($vote_array[$_SESSION['usr']]) && $vote_array[$_SESSION["usr"]] =="d") {echo "Downvoting failed to execute";} // checks if the user has already voted in this direction
+      else {
+        $vote_array[$_SESSION["usr"]] = 'd';
+        echo arraytostr($vote_array);
+        $votes = arraytostr($vote_array);
+        $rep = $rep - 1;
+        $conn->query('UPDATE posts SET reputation="'.$rep.'",votes="'.$votes.'" WHERE ID="'.$postid.'"');
+        //echo "Successfully downvoted on the post with id: ".$postid."\nold reputation: ".$oldrep.", new reputation:$rep, vote token:$votes";
+      }
     }
     elseif ($value == "neutralise") {
+      unset($vote_array[$_SESSION["usr"]]); // remove the user from the list
+      $votes = arraytostr($vote_array);
       if ($direction == 'up') {
         $rep = $rep + 1;
-        $conn->query("UPDATE posts SET reputation='$rep' WHERE ID='$postid'");
+        $conn->query('UPDATE posts SET reputation="'.$rep.'",votes="'.$votes.'" WHERE ID="'.$postid.'"');
         echo "Successfully neutralised the post with id: ".$postid."\nold reputation: ".$oldrep.", new reputation:$rep";
       }
-      elseif ('down') {
+      elseif ($direction == 'down') {
         $rep = $rep - 1;
-        $conn->query("UPDATE posts SET reputation='$rep' WHERE ID='$postid'");
+        $conn->query('UPDATE posts SET reputation="'.$rep.'",votes="'.$votes.'" WHERE ID="'.$postid.'"');
         echo "Successfully neutralised the post with id: ".$postid."\nold reputation: ".$oldrep.", new reputation:$rep";
       }
     }
     elseif ($value == "jump") {// if a user jumps from upvote to downvote straight away vice versa
       if ($direction == "up") {//if user upvotes after downvoting
+        $vote_array[$_SESSION["usr"]] = "u";
+        $votes = arraytostr($vote_array);
         $rep = $rep + 2;
-        $conn->query("UPDATE posts SET reputation='$rep' WHERE ID='$postid'");
-        echo "Successfully upjumped on the post with id: ".$postid."\nold reputation: ".$oldrep.", new reputation:$rep";
+        $conn->query('UPDATE posts SET reputation="'.$rep.'",votes="'.$votes.'" WHERE ID="'.$postid.'"');
+        echo "Successfully upjumped on the post with id: ".$postid."\nold reputation: ".$oldrep.", new reputation:$rep, token: $votes";
       }
       elseif ($direction=="down") { // if user downvotes after upvoting
+        $vote_array[$_SESSION["usr"]] = "d";
+        $votes = arraytostr($vote_array);
         $rep = $rep - 2;
-        $conn->query("UPDATE posts SET reputation='$rep' WHERE ID='$postid'");
+        $conn->query('UPDATE posts SET reputation="'.$rep.'",votes="'.$votes.'" WHERE ID="'.$postid.'"');
         echo "Successfully upjumped on the post with id: ".$postid."\nold reputation: ".$oldrep.", new reputation:$rep";
       }
     }
