@@ -99,6 +99,30 @@
         unlink("../dps/$id.jpg");
       }
 
+      elseif ($_POST['type'] == "deactivate") {
+        $conn = new mysqli($HOSTNAME,$USR,$PWD,$DBNAME);
+        $usr = $_SESSION['usr'];
+        $res = $conn->query("SELECT * FROM users WHERE usr='$usr'");
+        $row = $res->fetch_assoc();
+        if ($row["pwd"] == $_POST['pwd']) {
+          $conn->query("DELETE FROM users WHERE usr='$usr'");
+          $conn->query("DELETE FROM posts WHERE usr='$usr'");
+          $conn->query("DELETE FROM comments WHERE usr='$usr'");
+          unlink("../users/$usr.php");
+          session_unset();
+          session_destroy();
+          echo "0";
+        }
+        elseif ($_POST['pwd'] == "") {
+          echo "Password is required";
+        }
+        else {
+          echo "Incorrect password";
+        }
+
+
+      }
+
   }
   else {
     header("location:session.php");

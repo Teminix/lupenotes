@@ -19,6 +19,43 @@ if (isjquery == false) {
   head.appendChild(script);
 }
 
+// Utility functions
+function keyDown(event, keycode, func) {
+  if (event.keyCode == keycode){func};
+};
+function delElement(element,time) {
+  var parent = element.parentNode;
+  element.animate({
+    transform:["scale(1)","scale(0.9)"]
+  },time);
+   parent.removeChild(element);
+}
+function getByAttr(attr,value){
+  elems = document.getElementsByTagName("*");
+  list = [];
+  for(i=0;i<elems.length;i++) {
+    if(elems[i].getAttribute(attr) == value) {
+      list.push(elems[i])
+    }
+  }
+  return list;
+}
+
+function insertAfter(newNode, referenceNode) {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}
+function appendInOrder(array,parent) {
+  for (var i = 0; i < array.length; i++) {
+    parent.appendChild(array[i])
+    console.log(array[i])
+  }
+}
+
+
+
+
+
+
 
 // global imperative variables begin here
 var post_dir = "http://projhost:8088/Session/post.php"
@@ -28,9 +65,7 @@ var post_dir = "http://projhost:8088/Session/post.php"
 
 
 
-function keyDown(event, keycode, func) {
-  if (event.keyCode == keycode){func};
-};
+
 function changePass() { // Create a function to change the pasword or post the new password
     var old_pass = document.getElementsByName("password")[0].value; // old password
     var new_pass = document.getElementsByName("password")[1].value; // new password
@@ -155,7 +190,7 @@ function makeRead(elem) { // Save changes for the post
     }
   });
 }
-function deletePost(elem) {
+function deletePost(elem) { // to delete posts
   var parent = elem.parentNode;
   var id = parent.getAttribute("post-id");
   parent.parentNode.removeChild(parent);
@@ -284,4 +319,170 @@ function init_vote() {
 
     }
   }
+}
+
+
+
+
+// commenting part
+function expandTxtArea(element) {
+    element.setAttribute("rows","5");
+}
+
+function post_comment(element) {
+    var post_id = document.getElementsByClassName("post")[0].getAttribute("post-id")
+    var parent = element.parentNode;
+    var p = document.getElementsByClassName("prompt")[0];
+    var node = parent.getAttribute("node");
+    var dict = {"node":node,"post_id":post_id,type:"write"};
+    for (i=0;i<parent.children.length;i++) {
+      if (parent.children[i].tagName == "TEXTAREA"){
+      dict[parent.children[i].name] = parent.children[i].value.trim();}
+    }
+    //console.log(dict);
+    $.ajax({
+      type:"POST",
+      url:"comment.php",
+      data:dict,
+      success:function (data) {
+        if (data == "1") {
+          window.location.reload(true);
+        }
+        else {
+          p.innerHTML = data;
+        }
+      },
+      error:function () {
+        p.innerHTML = "Some error has occured";
+      }
+    })
+}
+function sort_comment(elem) {
+  var children = elem.children;
+  for(i=0;i<children.length;i++) {
+    child = children[i];
+    node = child.getAttribute("node");
+    if (!(node == "main")) {
+      var parent = document.getElementById(node);
+      parent.appendChild(child);
+      i -= 1;
+    }
+  }
+}
+function comm_func(button,func) { // function for the comment buttons
+  comment = button.parentElement.parentElement; // get the comments parent element
+  //console.log(comment)
+  core_comment = button.parentElement;
+  var comm_id = comment.getAttribute("id");;
+  //console.log(comm_id)
+  if (func == "delete") {
+    parent = comment.parentNode;
+    //console.log(parent)
+    comment.animate({transform:["scale(1)","scale(0.1)"]},500);
+    setTimeout(function(){parent.removeChild(comment)},500);
+    $.ajax({
+      type:"POST",
+      url:"comment.php",
+      data:{type:"delete",id:comm_id},
+      success:function(data) {
+        console.log(data)
+      },
+      error:function() {
+        console.log("Some error occured in the deletion process of deleting comment with id: "+comm_id)
+      }
+    })
+  }
+  else if (func == 'reply') { // if the command is a reply
+    var textarea = constructElem("textarea","",{style:"width:100%;font-size:15px",rows:"4",comment:"comment",placeholder:"Reply to commment",name:"comment-content"});
+    var cancel_butt = constructElem("button","Cancel",{onclick:"delElement(this.parentNode,0)"});
+    var br = constructElem("br","",{});
+    var span = constructElem("span","",{class:"prompt"});
+    br1 = constructElem("br","",{});
+    var post_button = constructElem("button","Post",{onclick:"post_comment(this)"}); // to get he relative comment
+    var comment_form = constructElem("div","",{class:"comment-form",node:core_comment.id}); // to create the form and the node
+    core_comment.appendChild(comment_form);
+    appendInOrder([textarea,br,span,br1,post_button,cancel_butt],comment_form);
+  }
+  else if (func =='edit') {
+    var breaktag = constructElem('br','',{});
+    if (button.getAttribute("mode") == "edit") { // if the button is ready to edit
+      var cont = comment.getElementsByClassName("content-wrapper")[0]; // get the content element
+      textarea = constructElem("textarea",cont.innerHTML.trim(),{style:"font-size:15px;",class:"content-wrapper"});
+      prompt = constructElem("span","",{class:"p"})
+      button.innerText = "Save";
+      button.setAttribute("mode","save")//toggle the mode
+      cont.parentNode.replaceChild(textarea,cont);
+      insertAfter(prompt,textarea)
+      insertAfter(breaktag,textarea);
+    }
+    else if (button.getAttribute("mode") =="save") {// if the button is ready to save
+      var textarea = comment.getElementsByClassName("content-wrapper")[0]; // get the textarea element
+      var prompt = comment.getElementsByClassName('p')[0];
+      var textdata =textarea.value.trim() //the data of the textareaa or the innerHTML/value
+      var dict = {type:"edit",id:comm_id,content:textdata};
+      cont = constructElem("span",textdata,{style:"font-size:15px;",class:"content-wrapper"});// construct the content element
+      $.ajax({
+        type:"POST",
+        url:'comment.php',
+        data:dict,
+        success: function (data) {
+          if (data == "0") {
+            button.innerText = "Edit";
+            button.setAttribute("mode","save");//toggle the mode
+            textarea.parentNode.removeChild(prompt)
+            textarea.parentNode.removeChild(comment.getElementsByTagName("br")[2])
+            textarea.parentNode.replaceChild(cont,textarea);
+          }
+          else {
+            prompt.innerHTML = data
+          }
+        },
+        error: function () {
+          console.log("Some error has occured in editing comment with id: "+comm_id)
+        }
+      })
+
+    }
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//construction functions
+
+function constructElem(name,html,data){
+  elem = document.createElement(name);
+  for (var key in data) {
+    elem.setAttribute(key,data[key])
+  };
+  elem.innerHTML = html;
+  return elem;
 }

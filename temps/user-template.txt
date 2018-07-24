@@ -29,7 +29,12 @@ foreach ($dir as $file) {
   fclose($file_handle);
 }
 
-
+$res1 = $conn->query("SELECT * FROM posts WHERE usr='$usr'");
+$array = array();
+while ($row1 = $res1->fetch_assoc()) {
+  array_push($array,$row1["reputation"]);
+}
+$rep_sum = array_sum($array);
  ?>
 
 
@@ -43,13 +48,19 @@ foreach ($dir as $file) {
 
    </head>
    <body>
+     <div class="nav">
+       <div class="nav-item">
+         <a href="../"></a>
+       </div>
+     </div>
      <div class="main">
        <?php
        echo "<img src='../dps/".$row["image"]."'>"
         ?>
      <br>
      <span>Username: <input type="text" name="usr" value="<?php echo $usr; ?>" readonly> </span> <br>
-     <span>Display name: <input type="text" name="display" value="<?php echo $row['display']; ?>" readonly> </span><br><br>
+     <span>Display name: <input type="text" name="display" value="<?php echo $row['display']; ?>" readonly> </span><br>
+     <span style="font-size:15px;color:blue">Reputation:<?php echo $rep_sum; ?> </span>
    </div>
    <div class="main">
    <?php
@@ -87,13 +98,15 @@ foreach ($dir as $file) {
             <button class='downvote' onclick='vote(this,\"down\")'>
               <img src='../images/down.png' class='button' >
             </button>
-          </div>
+          </div><br>
+          <a href='../Session/view-post.php?id=$id'> >> View post </a>
         </div>";}
         else {
           echo
           "<div class='post' post-id='$id'>
             <textarea readonly name='title' class='title' rows='1'>$title</textarea><br><br>
             <textarea class='postContent' name='content' readonly>$content</textarea>
+            <br><a href='../Session/view-post.php?id=$id'> >> View post </a>
           </div>";
         }
       }

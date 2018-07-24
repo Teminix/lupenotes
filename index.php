@@ -1,5 +1,5 @@
 <?php
-
+session_start();
  ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,12 +44,19 @@
         <div class="nav-item">
           <a href="login.php">LOGIN</a>
         </div>
+        <?php
+          if (isset($_SESSION["usr"])) {
+            echo '<div class="nav-item">
+              <a href="Session/session.php">GO TO ACCOUNT</a>
+            </div>';
+          }
+         ?>
       </div>
-      <form id="form" method="POST">
+      <form method="POST">
         <center>
           Register now!<br><br>
           <input type="text" name="usr" placeholder="Username*" required onkeypress="if (event.keyCode == 13) {EnterRegister()}"><br>
-          <span style="color:white; font-size:10px">* Username is case insensitive</span>
+          <span style="color:white; font-size:10px">* Username is case insensitive</span><br>
           <input type="text" name="display" placeholder="Dispay name*" required onkeypress="if (event.keyCode == 13) {EnterRegister()}"><br>
           <input type="text" name="email" placeholder="Email address*" required onkeypress="if (event.keyCode == 13) {EnterRegister()}"><br>
           <input type="password" name="pwd" placeholder="Password*" required onkeypress="if (event.keyCode == 13) {EnterRegister()}"><br>
@@ -59,14 +66,15 @@
            <button type="button" id="submit" value="register">Register</button>
           <br><br>
           Already have an account?<br>
-          <a href="/login.php">Go here!</a>
+          <a href="login.php">Go here!</a>
       </center>
       </form>
   </center>
   <script type="text/javascript">
   $(function () {
     $("#submit").click(function() {EnterRegister()});//$("#submit")
-  });//function()
+  });//function()//
+
   </script>
   </body>
 </html>

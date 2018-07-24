@@ -8,6 +8,16 @@ else {
   $usr = $_SESSION["usr"];
   $display = $_SESSION["display"];
 }
+
+// Get the total reputation
+
+$conn = new mysqli("localhost","root","root","project");
+$res1 = $conn->query("SELECT * FROM posts WHERE usr='$usr'");
+$array = array();
+while ($row1 = $res1->fetch_assoc()) {
+  array_push($array,$row1["reputation"]);
+}
+$rep_sum = array_sum($array);
  ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -27,15 +37,19 @@ else {
       $conn = new mysqli("localhost","root","root","project");
       $res = $conn->query("SELECT * FROM users WHERE usr='".$_SESSION["usr"]."'");
       $row = $res->fetch_assoc();
-      echo "<img src='../dps/".$row["image"]."'>"
+      echo "<img src='../dps/".$row["image"]."'>";
        ?>
     <br>
+    <!-- INFORMATION AND USER BUTTONS -->
     <span>Username: <input type="text" name="usr" value="<?php echo $usr; ?>" readonly> </span> <br>
-    <span>Display name: <input type="text" name="display" value="<?php echo $display; ?>" readonly> </span><br><br>
+    <span>Display name: <input type="text" name="display" value="<?php echo $display; ?>" readonly> </span><br>
+    <span style="font-size:17px;color:blue">Reputation: <?php echo $rep_sum; ?></span>
+    <br><br>
     <button type="button"><a href="logout.php">Log Out</a></button>
     <button type="button" name="display" class="edit">Edit Profile</button> <!-- First edit button -->
     <button type="button" name="pass" class="edit">Change Password</button> <!-- Second edit button -->
     <button type="button" name="profile">Change profile picture</button>
+    <button type="button" name="de-activate">Deactivate account</button>
   </div>
   <div class="post"> <!-- POST FORM/DIV -->
     <form>
@@ -48,7 +62,7 @@ else {
     </form>
   </div>
   <?php
-    $conn = new mysqli("localhost","root","root","project");
+    $conn = new mysqli("localhost","root","root","project"); // POSTS
     $query = "SELECT * FROM posts WHERE usr='$usr' ORDER BY id DESC";
     $res = $conn->query($query);
     while ($row= $res->fetch_assoc()) {
@@ -84,7 +98,9 @@ else {
           <button class='downvote' onclick='vote(this,\"down\")'>
             <img src='../images/down.png' class='button' >
           </button>
-        </div>
+        </div><br>
+        <a href='view-post.php?id=$id'> >> View post </a>
+
       </div>
 
       ";
@@ -194,6 +210,54 @@ else {
           }
         });
       }
+      //concerning deactivating account
+      deactivate = document.getElementsByName("de-activate")[0];console.log(deactivate); //get the button
+      deactivate.onclick = function () { // onclick of the button
+        deactivate.blur()
+        body = document.body; // get the body element
+        deact_elem = constructElem(
+          "div",
+          '<div class="content" style="width:30%">\
+\
+              You sure you want to deactivate the account?<br><br><br><br>\
+              <span class="div"><input type="password" placeholder="Password" id="pwd"></span><br><br>\
+              <span class="p"></span><br>\
+              <button type="button" class="cancel">Cancel</button><!-- Second cancel button-->\
+              <button type="button" class="verify">Yes</button> <!-- Second verify button-->\
+\
+          </div>',
+          {class:"modal"}
+        )// construct the element
+        body.appendChild(deact_elem); //append the element
+        deact_elem.style.display = "block";
+        var p = deact_elem.getElementsByClassName('p')[0];
+        document.body.onkeyup = function (event) { //check for the keyups
+           if(event.keyCode == "27") {
+             deact_elem.parentNode.removeChild(deact_elem)//remove or deconstruct the element
+           }
+        }
+        cancel_button[3].onclick = function () {
+          deact_elem.parentNode.removeChild(deact_elem)
+        }// the deactivate button verify button
+        verify_button[2].onclick =function () {
+          var password = document.getElementById("pwd").value;
+          $.ajax({
+            type:"POST",
+            url:"changes.php",
+            data:{type:"deactivate",pwd:password},
+            success:function(data) {
+              if (data == "0") {
+                window.location.href = "../index.php";
+              }
+              else {
+                p.innerHTML = data
+              }
+            },
+            error:function(){console.log("An error occured during deactivation")}
+          })
+        }
+      }
+
       init_vote();
 
 

@@ -20,7 +20,13 @@
 }
 
 
-/* KEYFRAMES EDIT */
+/* KEYFRAMES END */
+
+.header {
+  background-color:rgb(100,100,100);
+  font-size: 30px;
+  font-family: PT-mono;
+}
 
 img {
   width: 150px;
@@ -52,6 +58,7 @@ img#prev {
 }
 .score {
   display:inline-block;
+  color:white;
 }
 .vote-section {
   display:inline-block;
@@ -218,4 +225,125 @@ span.title {
 .content .pr {
   color: red;
   font-size: 15px;
+}
+
+
+/*comments section styles*/
+
+a {
+  color:blue;
+  text-decoration: none;
+  font-size: 20px
+}
+
+
+.comment-section {
+  padding: 15px;
+}
+.comments {
+  display: block;
+  background-color: rgb(50,50,50);
+  width: 100%;
+  min-height: 100px;
+  height:auto;
+  max-height: 1000px;
+  overflow-y:scroll;
+  margin:10px;
+  margin-left:0px;
+  padding: 20px;
+  padding-left:10px;
+
+}
+.comment {
+  color:white;
+  background-color: rgba(200,200,200,0.3);
+  padding:20px;
+  font-family: PT-mono;
+  border-left:5px solid orange;
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 17px;
+  transition:0.7s;
+  overflow: visible;
+}
+.comment .info-wrapper {
+  display: inline-block;
+  margin-bottom: 10px;
+  transition: 0.3s
+}
+.comment .info-wrapper * {
+  transition: 0.5s
+}
+.comment .info-wrapper:hover {
+  cursor: pointer;
+
+}
+.comment .info-wrapper:hover span {
+  color:blue;
+}
+.comment .info-wrapper span {
+  color:white;
+  font-size: 13px;
+  margin:0;
+}
+.comment .info-wrapper span.usr {
+  color:gray;
+  font-size: 10px;
+  display: inline-block;
+  transform: translateY(-7px);
+}
+.comment .info-wrapper img {
+  height:35px;
+  width:35px;
+  display: block;
+}
+.comment-form {
+  border-top: 7px white solid;
+  padding-top:10px;
+  overflow: hidden;
+}
+.comment-form textarea, textarea[comment] {
+  font-size: 20px;
+  color:white;
+  width:100%;
+}
+
+.comment-form textarea:focus, textarea[comment]:focus {
+  animation:none;
+  border-left: white solid 6px;
+  padding-left: 20px;
+}
+
+.comment .buttons .mini_button {
+  background-color: rgba(0,0,0,0);
+  font-size: 13px;
+  color:rgb(70,70,70);
+  margin-right: 10px;
+  margin-left: 10px;
+  padding-left: 0px;
+  padding-right: 0px;
+  font-weight:900;
+  transition:0.3;
+}
+.comment .buttons .mini_button:hover {
+  color:blue;
+  transform: scale(1.07)
+}
+
+
+
+
+/* PROMPTS */
+
+
+.prompt  {
+  color:red;
+  font-size:10px;
+  font-family: PT-mono;
+}
+.p {
+  color:red;
+  font-size:10px;
+  font-family: PT-mono;
 }
