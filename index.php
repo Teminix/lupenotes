@@ -1,5 +1,6 @@
 <?php
 session_start();
+include "lib.php";
  ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,13 +14,13 @@ session_start();
           var user = document.getElementsByName('usr')[0].value;
           var pass = document.getElementsByName('pwd')[0].value;
           var displayName = document.getElementsByName('display')[0].value;
-          // var email_addr = document.getElementsByName('email')[0].value;
+          var email_addr = document.getElementsByName('email')[0].value;
           var verif_pass = document.getElementsByName('pwd')[1].value;
           var subtype = $("#submit").val();
           $.ajax({
             type:"POST",
             url:"process.php",
-            data:{ usr:user,display:displayName,pwd:pass,verif_pwd:verif_pass,/*email:email_addr,*/type:subtype },
+            data:{ usr:user,display:displayName,pwd:pass,verif_pwd:verif_pass,email:email_addr,type:subtype },
             success: function(data) {
               if (data == "0") {
                 window.location.href = "Session/session.php";
@@ -36,22 +37,13 @@ session_start();
     </script>
   </head>
   <body>
+    <div class="nav">
+      <?php $path = __FILE__;
+      echo temp("temps/nav.php",["path"=>$path]); ?>
+    </div>
     <center>
-      <div class="nav">
-        <div class="nav-item">
-          <a href="users/">USERS</a>
-        </div>
-        <div class="nav-item">
-          <a href="login.php">LOGIN</a>
-        </div>
-        <?php
-          if (isset($_SESSION["usr"])) {
-            echo '<div class="nav-item">
-              <a href="Session/session.php">GO TO ACCOUNT</a>
-            </div>';
-          }
-         ?>
-      </div>
+
+
       <form method="POST">
         <center>
           Register now!<br><br>

@@ -60,16 +60,10 @@
           echo "Incorrect password(s), try again";
         }
         else {
-          if ($_POST["np"] == $_POST["vp"]) {
-            if (strlen($new_pass) < 6 || strlen($new_pass) > 20 ){echo "Password must be at least 6 characters and most 20 characters";}
+            if (strlen($new_pass) < 6 || strlen($new_pass) > 20 ){echo "0";}
             else {
             $conn->query("UPDATE users SET pwd='$new_pass' WHERE ID=".$row["ID"]);
             echo "1";}
-          }
-          else {
-            echo "The verified password and the new password must be the same";
-          }
-
         }
       }
       elseif ($_POST["type"] == "profile") {

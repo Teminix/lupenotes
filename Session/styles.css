@@ -1,7 +1,9 @@
 
 
 
-
+body, html {
+  height: 100%
+}
 /* FONTS START */
 
 @font-face {
@@ -22,6 +24,56 @@
 
 /* KEYFRAMES END */
 
+
+
+/* DIVS START */
+div.nav {
+  display: block;
+  background-color: black;
+  overflow:hidden;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-right:10px;
+  padding-left:10px;
+  height: 58px;
+}
+div.nav .nav-item {
+  color:white;
+  display: inline-block;
+  font-family: PT-mono;
+  padding-right: 10px;
+  height: 100%;
+  overflow:hidden;
+}
+div.nav .nav-item div {
+  color:white;
+  display: block;
+  padding:20px 0px;
+}
+div.nav .nav-item a {
+  color:inherit;
+  display: block;
+  padding-top: 20px;
+  padding-bottom:20px;
+  transform:none;
+  padding-left: 10px;
+  padding-right:10px;
+  transition:0.5s;
+}
+div.nav .nav-item a:hover {
+  background-color:rgb(91, 2, 216);
+  color:black;
+  transform:none;
+}
+div.nav .nav-item.right {
+  float:right;
+  clear: left;
+}
+div.nav img {
+  height:40px;
+  width: auto;
+}
+/* DIVS END */
 .header {
   background-color:rgb(100,100,100);
   font-size: 30px;
@@ -102,7 +154,7 @@ button:focus {
   font-family: PT-mono;
   font-size: 13px
 }
-.main span input, .div input {
+.main span input, .div input,input {
   font-family: inherit;
   font-size: inherit;
   background-color: black;
@@ -113,13 +165,13 @@ button:focus {
   padding-left: 5px;
   transition: 0.35s;
 }
-.div input {
+.div input, input {
   font-family: PT-mono;
   padding: 10px;
   padding-bottom: 3px;
   font-size:15px;
 }
-.div input:focus {
+.div input:focus, input:focus {
   border-bottom: rgb(91, 2, 216) solid 4px;
   background-color: rgb(35,35,35);
   outline:0;
@@ -133,7 +185,6 @@ button[name="reset"], button[name="submitPost"] {
 }
 button[purpose='post'] {
   float: right;
-
 }
 .button {
   width:15px;
@@ -337,13 +388,15 @@ a {
 /* PROMPTS */
 
 
-.prompt  {
+.prompt, .p  {
   color:red;
-  font-size:10px;
+  font-size:1px;
   font-family: PT-mono;
 }
-.p {
-  color:red;
-  font-size:10px;
-  font-family: PT-mono;
+
+
+/* HEADINGS */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family:PT-mono
 }

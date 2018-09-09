@@ -1,13 +1,17 @@
-<?php
 
+<?php
+session_start();
+if(isset($_SESSION["usr"])){
+  header("location:Session/session.php");
+}
  ?>
 
 <html>
   <head>
     <meta charset="utf-8">
     <title>Login page</title>
-    <link rel="stylesheet" href="/styles/main.css">
-    <script src="scripts/Libraries/jquery.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="styles/main.css">
+    <script src="scripts/Libraries/jquery.js" type="text/javascript"></script>
     <script type="text/javascript">
     function EnterLogin() {
         var user = document.getElementsByName('usr')[0].value;
@@ -36,15 +40,16 @@
     </style>
   </head>
   <body>
-    <center>
-      <div class="nav">
-        <div class="nav-item">
-          <a href="users/">USERS</a>
-        </div>
-        <div class="nav-item">
-          <a href="index.php">REGISTER</a>
-        </div>
+    <div class="nav">
+      <div class="nav-item">
+        <a href="users/">USERS</a>
       </div>
+      <div class="nav-item">
+        <a href="index.php">REGISTER</a>
+      </div>
+    </div>
+    <center>
+
       <form id="form">
         <center>
           Login now!<br><br>

@@ -14,7 +14,7 @@ session_start();
         }
         else {
           $res = $conn->query("INSERT INTO comments (usr,content,post_id,node) VALUES ('$usr','$content','$postid','$node')");
-          echo '1';
+          echo "1";
         }
       }
       elseif ($_POST["type"] == "edit") {
@@ -38,13 +38,19 @@ session_start();
 
       }
       elseif ($_POST["type"] == "delete") {
+        $children = $_POST['children'];
         $conn = new mysqli("localhost","root","root","project");
         $id = mysqli_real_escape_string($conn,$_POST['id']);
         $res = $conn->query("SELECT * FROM comments WHERE ID=$id");
         $row = $res->fetch_assoc();
         if ($_SESSION["usr"] == $row["usr"]) {
           $conn->query("DELETE FROM comments WHERE ID=$id");
-          echo "Deleted comment with id: $id";
+          echo "Deleted comment id: $id";
+          foreach ($children as $value) {
+            $conn->query("DELETE FROM comments WHERE ID=$value");
+            echo "Deleted child with id: $value";
+          }
+
         }
         else {
           echo "Invalid comment owner";

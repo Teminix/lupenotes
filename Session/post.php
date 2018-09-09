@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
    $content = addslashes($content);
    $query = "INSERT INTO posts (title,content,usr) VALUES ('$title','$content','$usr')";
    $res = $conn->query($query);
-   echo "1";
+   echo "0";
     }
   }
   elseif ($_POST["type"] == "editPost") {
@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
       $content = $_POST["content"];
       $query = "UPDATE posts SET content='$content', title='$title' WHERE ID='$id'";
       $res = $conn->query($query);
-      echo "1";
+      echo "0";
     }}
     else {
       echo "failed to change post with id: ".$_POST["id"];

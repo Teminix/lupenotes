@@ -45,9 +45,13 @@ else {
 
 <?php
       if(isset($_SESSION["usr"])){
+        if ($usr == $_SESSION['usr']) {
+          $edit_delete="<button type='button' purpose='post' name='edit' onclick='makeEdit(this)'>Edit</button>
+          <button type='button' purpose='post' onclick='deletePost(this)'>Delete</button>";
+        }
       echo
-      "<button type='button' purpose='post' name='edit' onclick='makeEdit(this)'>Edit</button>
-      <button type='button' purpose='post' onclick='deletePost(this)'>Delete</button>
+      "
+      $edit_delete
       <div class='vote-section' voted='$vote_type'>
          <button class='upvote' onclick='vote(this,\"up\")'>
            <img src='../images/up.png' class='button'>
@@ -56,7 +60,8 @@ else {
          <button class='downvote' onclick='vote(this,\"down\")'>
            <img src='../images/down.png' class='button'>
          </button>
-       </div>";}
+       </div>";
+     }
  ?><br><br>
        <br>
        <div class="header">
@@ -81,7 +86,7 @@ else {
               $content = $row["content"];
               if ($_SESSION["usr"] == $user) {
                 $buttons = "
-                <div class='buttons'>
+                <div class='buttons' node='$node'>
                   <button class='mini_button' onclick='comm_func(this,\"reply\")'>Reply</button>
                   <button class='mini_button' onclick='comm_func(this,\"delete\")'>Delete</button>
                   <button class='mini_button' onclick='comm_func(this,\"edit\")' mode='edit'>Edit</button>
@@ -91,7 +96,7 @@ else {
               else {
                 $buttons = "
                 <div class='buttons'>
-                  <button class='mini_button' onclick='comm_func(this.parentElement,\"reply\")'>Reply</button>
+                  <button class='mini_button' onclick='comm_func(this,\"reply\")'>Reply</button>
                 </div>
                 ";
               }

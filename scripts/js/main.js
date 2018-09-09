@@ -50,7 +50,14 @@ function appendInOrder(array,parent) {
     console.log(array[i])
   }
 }
-
+function getAttrs(elem, attributes) { // get the attributes in a dictionary
+  dict = {};
+  for (var i = 0; i < attributes.length; i++) {
+    attribute = attributes[i];
+    dict[attribute] = elem.getAttribute(attribute);
+  }
+  return dict;
+}
 
 
 
@@ -66,54 +73,10 @@ var post_dir = "http://projhost:8088/Session/post.php"
 
 
 
-function changePass() { // Create a function to change the pasword or post the new password
-    var old_pass = document.getElementsByName("password")[0].value; // old password
-    var new_pass = document.getElementsByName("password")[1].value; // new password
-    var ver_pass = document.getElementsByName("password")[2].value;
-    var prompts = document.getElementsByClassName("pr");
-    $.ajax ({ // ajax call the information
-      type:"POST",
-      url:"changes.php",
-      data: {op:old_pass,np:new_pass,vp:ver_pass,type:"password"}, // The type of the call is password
-      success: function (data) { // on success
-        if (data == "1") { // if the data was valid and the password met conditions:
-          modal[1].style.display = "none"; // close modal
-          window.location.reload(true); // reload window
-        }
-        else {
-          prompts[1].innerHTML = data; // otherwise inform the userof the error
-        }
-      },
-      error: function () {
-        prompts[1].innerHTML = "Some error occured in trying to change your password"; // An error message to be displayed
-      }
-    });
 
-}
-function changeUsr() { //function to change the username or display name
-  //Get the data:
-    var user = document.getElementById("usr").value;
-    var displayName = document.getElementById("display").value;
-    var pass = document.getElementById("pass").value;
-    $.ajax({ // Make an ajax call with the data
-      type:"POST",
-      url:"changes.php",
-      data: { usr:user,display:displayName,pwd:pass,type:"username" },
-      success: function (data) {
-        if (data == "1") {
-          modal[0].style.display="none";
-          window.location.reload(true);
-        }
-        else {
-          document.getElementsByClassName('pr')[0].innerHTML = data;
-        }
-      },
-      error: function() {
-        document.getElementsByClassName('pr')[0].innerHTML = "Some error occured in the server";
-      }
-    });
+// GENERATION 1 FUNCTIONS START
 
-}
+
 function resetVal(array) { // define the elements to have their value reset
   for (i=0;i<array.length;i++) {
     array[i].value = "";
@@ -321,6 +284,90 @@ function init_vote() {
   }
 }
 
+// GENERATION 1 FUNCTIONS END
+
+
+
+
+// GENERATION 2 FUNCTIONS START
+function post_form(elem,args,trim=true) {
+      if (args["success"] == undefined) {
+        ajaxSuccess = function(data) {
+          if (data == "0") {
+            window.location.reload(true)
+          }
+          else {
+            prompt.innerHTML = data
+          }
+        }
+      }
+      if (args["success"] != undefined) {
+        ajaxSuccess = args["success"]
+      }
+      if (args["error"] == undefined) {
+        ajaxError = function() {
+          prompt.innerHTML = "Internal Server Error"
+        }
+      }
+      if (args["error"] != undefined) {
+        ajaxError = args["error"]
+      }
+      if (args["ext"] == undefined) {
+        dataSet = {}
+      }
+      if (args["ext"] != undefined) {
+        var dataSet = {};
+        for (var key in args["ext"]) {
+          dataSet[key] = args["ext"][key]
+        }
+      }
+      var form = elem.closest("form");
+      var children = form.getElementsByTagName("*"); // This is actually the descendents and not the children only
+      /*for (let key in ext) {
+        // dataSet[key] = ext[key];
+        console.log(ext)
+      }*/
+      var ajaxURL = args["url"]
+      var prompt = form.getElementsByClassName("p")[0]
+      for (var i = 0; i < children.length; i++) {
+        let child = children[i];
+        if (child.tagName == 'INPUT' || child.tagName == "TEXTAREA") {
+          console.log(child)
+          let name = child.name;
+          let value = child.value;
+          if (trim == true) {
+            name = name.trim()
+            value = value.trim()
+          }
+          dataSet[name] = value
+        }
+
+      }
+      // console.log(dataSet)
+      // console.log(prompt)
+      $.ajax(
+        {data:dataSet,
+        success:function(data) {
+          ajaxSuccess(data)
+        }
+        ,error:function() {
+          ajaxError()
+        }
+        ,url:ajaxURL
+        ,type:"POST"}
+      )
+
+  }
+
+
+
+
+
+
+// GENERATION 2 FUNCTIONS END
+
+
+
 
 
 
@@ -331,13 +378,15 @@ function expandTxtArea(element) {
 
 function post_comment(element) {
     var post_id = document.getElementsByClassName("post")[0].getAttribute("post-id")
-    var parent = element.parentNode;
+    var post_button_parent = element.parentNode;
     var p = document.getElementsByClassName("prompt")[0];
-    var node = parent.getAttribute("node");
+    var node = post_button_parent.getAttribute("node");
+    console.log(post_button_parent);
+    console.log(node);
     var dict = {"node":node,"post_id":post_id,type:"write"};
-    for (i=0;i<parent.children.length;i++) {
-      if (parent.children[i].tagName == "TEXTAREA"){
-      dict[parent.children[i].name] = parent.children[i].value.trim();}
+    for (i=0;i<post_button_parent.children.length;i++) {
+      if (post_button_parent.children[i].tagName == "TEXTAREA"){
+      dict[post_button_parent.children[i].name] = post_button_parent.children[i].value.trim();}
     }
     //console.log(dict);
     $.ajax({
@@ -372,7 +421,6 @@ function sort_comment(elem) {
 function comm_func(button,func) { // function for the comment buttons
   comment = button.parentElement.parentElement; // get the comments parent element
   //console.log(comment)
-  core_comment = button.parentElement;
   var comm_id = comment.getAttribute("id");;
   //console.log(comm_id)
   if (func == "delete") {
@@ -380,10 +428,16 @@ function comm_func(button,func) { // function for the comment buttons
     //console.log(parent)
     comment.animate({transform:["scale(1)","scale(0.1)"]},500);
     setTimeout(function(){parent.removeChild(comment)},500);
+    childs = comment.getElementsByClassName("comment");
+    child_ids = [];
+    for (var i = 0; i < childs.length; i++) {
+      child_ids.push(Number(childs[i].getAttribute("id")));
+    }
+    //console.log(child_ids)
     $.ajax({
       type:"POST",
       url:"comment.php",
-      data:{type:"delete",id:comm_id},
+      data:{type:"delete",id:comm_id,children:child_ids},
       success:function(data) {
         console.log(data)
       },
@@ -398,9 +452,12 @@ function comm_func(button,func) { // function for the comment buttons
     var br = constructElem("br","",{});
     var span = constructElem("span","",{class:"prompt"});
     br1 = constructElem("br","",{});
+    console.log(comment);
+    var node_id =comment.id; // Get the core comment node or id
+    //console.log(node_id);
     var post_button = constructElem("button","Post",{onclick:"post_comment(this)"}); // to get he relative comment
-    var comment_form = constructElem("div","",{class:"comment-form",node:core_comment.id}); // to create the form and the node
-    core_comment.appendChild(comment_form);
+    var comment_form = constructElem("div","",{class:"comment-form",node:node_id}); // to create the form and the node
+    comment.appendChild(comment_form);
     appendInOrder([textarea,br,span,br1,post_button,cancel_butt],comment_form);
   }
   else if (func =='edit') {

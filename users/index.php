@@ -1,5 +1,6 @@
 <?php
 session_start();
+include "../php/lib.php";
 $dir = scandir("."); //scans the directory
 $dir = array_diff($dir,[".","..","index.php",".DS_Store",".gitignore"]); // remove . .. index.php and .DS_Store
 $dir_raw = "[";
@@ -93,11 +94,16 @@ foreach ($dir as $file) {
         text-align: center;
       }
     </style>
+    <link rel="stylesheet" href="../Session/styles.css">
     <script type="text/javascript">
       console.log("Current user session: "+"<?php echo $_SESSION["usr"]; ?>")
     </script>
   </head>
   <body>
+    <?php
+    $file_path = __FILE__;
+    $dir = __DIR__;
+    echo temp("../temps/nav.php",['path'=>$file_path,'dir'=>$dir]); ?>
     <div class="users">
       <h1>USERS REGISTERED</h1>
     <?php

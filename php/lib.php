@@ -47,4 +47,14 @@ function concat_array($array,$concat) {
   }
   return $array;
 }
+
+function temp($url,$vars=[]) { // vars is for the moment where the server would need to pass in variables to the template
+  $temp = file_get_contents($url);
+  $regex = preg_replace("/<\?php|\?>/","",$temp);
+  foreach ($vars as $key => $value) {
+    $varstring = $varstring."\$$key = '$value';";
+  }
+  $return = eval($varstring.$regex);
+  return $return;
+}
  ?>

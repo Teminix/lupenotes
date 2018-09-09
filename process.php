@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__."/php/lib.php";
+require "lib.php";
 session_start();
 $prompt = "prompt"; //Set the prompt variable
 $rescharset = array("form" =>concat_array(strtoarray("{}[]:;|\\<>?,./!@#$%^&*()"),["'",'"']));
@@ -19,7 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") { // if method is post
     $display = mysqli_real_escape_string($conn,$_POST["display"]); // receive variable 'display'
     $pwd  = mysqli_real_escape_string($conn,$_POST["pwd"]);//  receive variable 'pwd'
     $verif_pwd = mysqli_real_escape_string($conn,$_POST["verif_pwd"]);
-    if (!($pwd == $verif_pwd)) {
+    $email = mysqli_real_escape_string($conn,$_POST["email"]);
+    if (!($pwd == $verif_pwd)) { // if both the passwords are not the same
       echo "The password must be verified (correctly) before registering";
     }
     elseif (strlen($usr) < 6 || strlen($display) < 6 || strlen($pwd) < 6) { // if Character expectation less then:
@@ -40,16 +41,23 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") { // if method is post
         echo "User with username ".$usr." already exists. If you want to login, <a href='/login.php'>Go here</a>";
       }
       if ($check == 0) {//if not
-        $query = "INSERT INTO users (usr,display,pwd) VALUES ('$usr','$display','$pwd')"; // insert user query
-        $res = $conn->query($query); // execut $query and store in $res just in case
-        $_SESSION["usr"] = $usr; // Set usr Session variable
-        $_SESSION["display"] = $display; // Set display name session variable
-        $temp_data = file_get_contents("temps/user-template.txt"); // get the data of the template file
-        $usr_file = fopen("users/$usr.php","w"); // open/create a new file with the username as the name of the file with php extension
-        fwrite($usr_file,$temp_data); // write to the $usr_file
-        fclose($temp_file);
-        fclose($usr_file);
-        echo "0";
+        if (verify_email($email)) {
+          // echo "Elligible email address";
+          $query = "INSERT INTO users (usr,email,display,pwd) VALUES ('$usr','$email','$display','$pwd')"; // insert user query
+          $res = $conn->query($query); // execut $query and store in $res just in case
+          $_SESSION["usr"] = $usr; // Set usr Session variable
+          $_SESSION["display"] = $display; // Set display name session variable
+          $temp_data = file_get_contents("temps/user-template.txt"); // get the data of the template file
+          $usr_file = fopen("users/$usr.php","w"); // open/create a new file with the username as the name of the file with php extension
+          fwrite($usr_file,$temp_data); // write to the $usr_file
+          fclose($temp_file);
+          fclose($usr_file);
+          echo "0";
+        } else {
+          echo "Invalid email address";
+        }
+
+
       }
     }
 
