@@ -4,15 +4,16 @@ $DBSERVER = "localhost";
 $DBUSER = "root";
 $DBPASS = "root";
 $DBNAME = "project";
-
 if (!isset($_SESSION["usr"])) {
-  header("location:../index.php");
+  header("location:../main.php");
 }
 $usr = $_SESSION["usr"];
 $conn = new mysqli($DBSERVER,$DBUSER,$DBPASS,$DBNAME);
 $res = $conn->query("SELECT * FROM users WHERE usr='$usr'");
 $row = $res->fetch_assoc();
+$image = $row['image'];
 $display = $row["display"];
+$email = $row["email"];
 ?>
 
 <!DOCTYPE html>
@@ -53,7 +54,6 @@ $display = $row["display"];
     </style>
     <link rel="stylesheet" href="../styles/colors.css">
     <script type="text/javascript">
-
       var defaulters = {
         usr:'<?php echo $usr; ?>',
         display:'<?php echo $display; ?>'
@@ -102,6 +102,19 @@ $display = $row["display"];
     </script>
   </head>
   <body>
+    <div class="nav">
+      <div class="nav-item">
+        <a href="../main.php">REGISTER</a>
+      </div>
+      <div class="nav-item">
+        <a href="../communities.php">LUPES</a>
+      </div>
+      <div class="nav-item right">
+        <a href="session.php" class="image">
+          <img src="../dps/<?php echo $row["image"]; ?>" alt="">
+        </a>
+      </div>
+    </div>
     <div class="main">
       <div>
         <h1>Edit profile:</h1>
@@ -109,7 +122,7 @@ $display = $row["display"];
         <form>
           <div class="img_container" style="display:inline-block" onclick="Modal.toggle('dp')">
               <img src="../dps/<?php echo $row["image"]; ?>"><!--
-              --><h6 class="img">Change</h6>
+              --><h6 class="img" onclick="Modal.toggle('dp')">Change</h6>
           </div>
         </form>
         <h4>Edit Username or Display name:</h4>
@@ -160,6 +173,31 @@ $display = $row["display"];
             <button type="button" name="button" style="float:right;" onclick="reset(this)">Cancel</button>
           </div>
 
+        </form>
+        <br><br>
+        <h4>
+          Email Verification(account link)
+        </h4>
+        <form>
+          <table>
+            <tr>
+              Email:
+            </tr>
+            <tr>
+              <input type="text" value="<?php echo $email; ?>" readonly>
+            </tr>
+          </table>
+          <span class="p"></span>
+          <div>
+              <?php
+              if ($row["email_v"] == "0") {
+                echo '<button type="button" class="highlighted" onclick="window.location.href = \'verify-window.php\'" style="float:right">Verify</button>';
+              }
+              else {
+                echo '<button type="button" class="highlighted" onclick="window.location.href = \'verify-window.php?type=change\'" style="float:right">Change</button>';
+              }
+               ?>
+          </div>
         </form>
 
       </div>
@@ -228,8 +266,6 @@ $display = $row["display"];
         else {
           prompt.html("The new password and verify password must be the same.")
         }
-
-
       })
     </script>
   </body>

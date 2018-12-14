@@ -57,4 +57,21 @@ function temp($url,$vars=[]) { // vars is for the moment where the server would 
   $return = eval($varstring.$regex);
   return $return;
 }
+function rand_str($len)
+{
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $randstring = '';
+    for ($i = 0; $i < $len; $i++) {
+        $randstring = $randstring.$characters[rand(0, strlen($characters))];
+    }
+    return $randstring;
+}
+function verify_email($string) { // checks if the email address is valid
+  if (filter_var($string,FILTER_VALIDATE_EMAIL) == false) {
+    return false;
+  }
+  else {
+    return true;
+  }
+}
  ?>

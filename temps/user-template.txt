@@ -20,7 +20,7 @@ $conn = new mysqli($HOSTNAME,$DBUSER,$DBPASS,$DBNAME);
 $res = $conn->query("SELECT * FROM users WHERE usr='$usr'");
 $row = $res->fetch_assoc();
 $dir = scandir(".");
-$dir = array_diff($dir,[".","..","index.php",".DS_Store",".gitignore"]);
+$dir = array_diff($dir,[".","..","main.php",".DS_Store",".gitignore"]);
 $dir_raw = "[";
 foreach ($dir as $file) {
   $file_handle = fopen($file,"w");

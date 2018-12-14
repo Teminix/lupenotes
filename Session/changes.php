@@ -68,19 +68,25 @@
       }
       elseif ($_POST["type"] == "profile") {
 
-        $file =  $_FILES["fileupload"];
-        $fileName = $file["name"];
-        $conn = new mysqli("localhost","root","root","project");
-        $query = "SELECT * FROM users WHERE usr='".$_SESSION["usr"]."'";
-        $res = $conn->query($query);
-        $row = $res->fetch_assoc();
-        $id = $row["ID"];
-        $dest = "../dps/".$id.".jpg";
-        $query = "UPDATE users SET image='$id.jpg' WHERE id='$id'";
-        $res = $conn->query($query);
+        if (!is_uploaded_file($_FILES["fileupload"]["tmp_name"])) {
+          header("location:session.php");
+        }
+        else {
+          $file =  $_FILES["fileupload"];
+          $fileName = $file["name"];
+          $conn = new mysqli("localhost","root","root","project");
+          $query = "SELECT * FROM users WHERE usr='".$_SESSION["usr"]."'";
+          $res = $conn->query($query);
+          $row = $res->fetch_assoc();
+          $id = $row["ID"];
+          $dest = "../dps/".$id.".jpg";
+          $query = "UPDATE users SET image='$id.jpg' WHERE id='$id'";
+          $res = $conn->query($query);
 
-        move_uploaded_file($file["tmp_name"],$dest);
-        header("location:session.php");
+          move_uploaded_file($file["tmp_name"],$dest);
+          header("location:session.php");
+        }
+
         //echo "test";
       }
       elseif ($_POST["clear"] == "TRUE") {

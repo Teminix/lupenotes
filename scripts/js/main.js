@@ -1,25 +1,202 @@
+// initialisers
+//jQuery initialiser
+var globals = {
+  port:8088}
+var root ="http://projhost:"+globals.port+"/";
 
+(function() {
+  var head = document.head;
+  var scripts = [];
+  for (i=0;i<head.children.length;i++) {
+    if (head.children[i].tagName == "SCRIPT") {
+      scripts.push(head.children[i]);
+    }
+  }
+  //console.log(scripts);
+  var isjquery = false;
+  for (var i = 0; i < scripts.length; i++) {
+    if(scripts[i].getAttribute("src") == root+"scripts/Libraries/jquery.js") {
+      isjquery = true
+    }
+  }
+  if (isjquery == false) {
+    script = document.createElement("script");
+    script.setAttribute("src",root+"scripts/Libraries/jquery.js");
+    head.appendChild(script);
+  }
+}());
+// Icon initialiser
+(function() {
 var head = document.head;
-var scripts = [];
-for (i=0;i<head.children.length;i++) {
-  if (head.children[i].tagName == "SCRIPT") {
-    scripts.push(head.children[i]);
-  }
-}
-//console.log(scripts);
-var isjquery = false;
-for (var i = 0; i < scripts.length; i++) {
-  if(scripts[i].getAttribute("src") == "http://projhost:8088/scripts/Libraries/jquery.js") {
-    isjquery = true
-  }
-}
-if (isjquery == false) {
-  script = document.createElement("script");
-  script.setAttribute("src","http://projhost:8088/scripts/Libraries/jquery.js");
+  var link = document.createElement("link");
+  link.setAttribute("rel","icon") ;
+  link.setAttribute("href",root+"images/icon-dark.png");
+  head.appendChild(link)
+  let script = document.createElement('script');
+  script.src = root+"scripts/js/colors.js";
   head.appendChild(script);
-}
+  console.log("Set icon")
+})();
+
+
+
+
+
+
+
+
+
 
 // Utility functions
+function confirmUsr(string,func,cancel=function(){}){
+  let c = confirm(string);
+  if(c == true){
+    func()
+  }
+  else{
+    cancel()
+  }
+}
+function redirect(url){
+  window.location.href=url
+}
+function collectionToArray(col){
+  let array = [];
+  for (let elem of col) {
+    array.push(elem);
+  }
+  return array;
+}
+function merge_array(arr1,arr2){
+  for(let item of arr2){
+    arr1.push(item);
+  }
+  return arr1;
+}
+function resetForm(elem,defaults,event){
+  event.preventDefault();
+  let c = confirm("Any changes made to the form will be reset to default/original values\n\nContinue?");
+  if (c == true) {
+    let form = $(elem).closest('form');
+    console.log(form);
+    for (let key in defaults) {
+      // console.log(form.find(`[name=${key}]`));
+      form.find(`[name=${key}]`).val(defaults[key]);
+    }
+  }
+  else {
+    console.log('test')
+  }
+
+}
+function q(sel){
+  let selected = document.querySelectorAll(sel);
+  if (selected.length == 1) {
+    return selected[0]
+  } else {
+    return selected
+  }
+}
+function MultiType(array,time=50){
+  Element.prototype.computedStyle=function(){
+    return getComputedStyle(this)
+  }
+  function type(elem,string,time=50,finish=function(){}){
+  elem.innerHTML =""
+  i = 0
+  interval = setInterval(function(){
+      elem.innerHTML += string[i];
+  	if(i >= string.length-1){
+  		console.log('Type completed');
+      	clearInterval(interval);
+        finish()
+      }
+
+  	else {
+  		i++}},time)
+  }
+  let accept = [HTMLCollection,NodeList,Array];
+  if(!accept.includes(array.constructor)){
+    throw new TypeError(`Invalid Argument given: '${array.constructor.name}'. Accepts: ${accept.map((e)=>{return e.name}).toString()} `)
+  }
+  array.forEach(function(e){
+    let index = array.indexOf(e);
+    if(!(e instanceof Element)){
+      throw new TypeError(
+        `Invalid variable type given: '${e.constructor.name}' at index '${index}'. Accepts: Element`
+      )
+    }
+  })
+  let msg = array[0].innerHTML;
+  let styleSheet = [];
+  for (let item of array) {
+    styleSheet.push(item.computedStyle().display);
+    item.style.display = "none"
+  }
+  // console.log(styleSheet[0])
+  array[0].style.display = styleSheet[0]
+  type(array[0],msg,time,function(){
+    if(array.length-1 != 0){
+      array.splice(0,1);
+      styleSheet.splice(0,1);
+      array[0].style.display = styleSheet[0]
+      // console.log('Type completed')
+      MultiType(array)
+    }
+  })
+}
+
+function clearForm(elem,action=null){
+    var form = elem.closest("form");
+    console.log(form);
+    var inputs = collectionToArray(form.getElementsByTagName('input'));
+    var textareas = collectionToArray(form.getElementsByTagName('textarea'));
+    inputs = merge_array(inputs,textareas);
+    inputs.push('test');
+    console.log(inputs);
+    let changes = null;
+    console.log('Ran clear form');
+    for(let input of inputs){
+      value = input.value;
+      if (value == undefined) {
+        value = "";
+      }
+      if (value.trim() != "") {
+        changes = true;
+        break
+      }
+    }
+    if (changes == true) {
+      if (action != null) {
+        let conf = confirm('Any changes made will get destroyed\n\n Proceed?');
+        if (conf == true) {
+          history.go(-1)
+        }
+      } else {
+        console.log('Changes detected');
+        let conf = confirm('It appears that you have made some changes\n leaving or clearing the form would loose the data\n\n Are you sure you want to cancel/leave?')
+        if (conf == true) {
+            for (let input of inputs) {
+              input.value = "";
+            }
+        }
+        else {
+          history.go(-1);
+         }
+      }
+
+      }
+
+
+
+}
+function baseName(str)
+{
+   var base = new String(str).substring(str.lastIndexOf('/') + 1);
+    if(base.lastIndexOf(".") != -1)
+        base = base.substring(0, base.lastIndexOf("."));
+   return base+"."+str.split(".").pop();
+}
 function keyDown(event, keycode, func) {
   if (event.keyCode == keycode){func};
 };
@@ -50,6 +227,7 @@ function appendInOrder(array,parent) {
     console.log(array[i])
   }
 }
+const l = function(sel){console.log(sel)}
 function getAttrs(elem, attributes) { // get the attributes in a dictionary
   dict = {};
   for (var i = 0; i < attributes.length; i++) {
@@ -58,14 +236,40 @@ function getAttrs(elem, attributes) { // get the attributes in a dictionary
   }
   return dict;
 }
-
+function dictEmpty (dict) { // check if a dictionary is empty
+  let len = 0;
+  for (var elem in dict) {
+    len++
+  }
+    if (len==0) {
+      return true;
+    }
+    else {
+      return false
+    }
+}
+function getQueryData(url){
+  if (url.indexOf("?") != -1) {
+    dict = {};
+    let queryString = url.split("?")[1];
+    for(let statement of queryString.split('&')){
+      let key = statement.split('=')[0];
+      let value = statement.split('=')[1];
+      dict[key] = value;
+    }
+    return dict
+  }
+  else {
+    return null
+  }
+}
 
 
 
 
 
 // global imperative variables begin here
-var post_dir = "http://projhost:8088/Session/post.php"
+var post_dir = root+"Session/post.php"
 
 
 // functions begin here
@@ -118,6 +322,13 @@ function makeEdit(elem) { // Make changes to the post
       elem.parentNode.children[i].removeAttribute("readonly");
     }
   }
+  let divs = parent.querySelectorAll(".inputArea");
+  for (let div of divs) {
+    let html = div.innerHTML;
+    let textarea = document.createElement('textarea');
+    textarea.innerHTML = html;
+    parent.replaceChild(div,textarea);
+  }
   elem.innerHTML = "Save"; // Change the innerHTML to 'Save'
   elem.setAttribute("onclick","makeRead(this)"); // Add a new onclick event
 }
@@ -142,7 +353,7 @@ function makeRead(elem) { // Save changes for the post
     url:post_dir,
     data:dict,
     success: function (data){
-      if(data=="1") {
+      if(data=="0") {
         console.log("Editing post sucessful of id: "+post_id);
       }
       else {
@@ -154,6 +365,7 @@ function makeRead(elem) { // Save changes for the post
   });
 }
 function deletePost(elem) { // to delete posts
+  confirmUsr("WARNING: \n Are you sure you want to delete?\n\n This cannot be undone.",function(){
   var parent = elem.parentNode;
   var id = parent.getAttribute("post-id");
   parent.parentNode.removeChild(parent);
@@ -168,6 +380,7 @@ function deletePost(elem) { // to delete posts
       console.log("Some error occured in the process of deleting post id: "+id)
     }
   });
+})
 }
 function vote(elemnt,vote_type) { // the vote function that needs to be utilised
   var parent = elemnt.parentNode; // get the parent div
@@ -176,41 +389,41 @@ function vote(elemnt,vote_type) { // the vote function that needs to be utilised
   if (vote_type == "up") { // if the vote_type argument is "up" for upvote
     if (parent.getAttribute("voted") == "0"){ // if the parent of the element has not been voted upon yet
         elemnt.children[0].setAttribute("src",'../images/upfilled.png') // change the upvote image
-        elemnt.style = "background-color:rgb(110, 0, 255)"; //change the upvote background colol to purple
+        elemnt.style.backgroundColor = "rgb(110, 0, 255)"; //change the upvote background colol to purple
         parent.setAttribute("voted","up")
         vote_element.innerHTML = String(Number(vote_element.innerHTML)+1)
         $.ajax({
           type:"POST",
           url:post_dir,
-          data:{type:"vote",value:"upvote",pid:post_id},
+          data:{type:"vote",value:"1",pid:post_id},
           success:function(data){console.log(data)},
           error: function() {console.log("error in upvoting post id: "+post_id)}
         });
     }
     else if (parent.getAttribute("voted") == "up") { // if upvote has already been a vote been casted
         elemnt.children[0].setAttribute("src","../images/up.png");
-        elemnt.setAttribute("style","background-color:rgb(45,45,45)");
+        elemnt.style.backgroundColor = "rgb(0,200,200)";
         parent.setAttribute("voted","0");
         vote_element.innerHTML = String(Number(vote_element.innerHTML)-1);
         $.ajax({
           type:"POST",
           url:post_dir,
-          data:{type:"vote",value:"neutralise",direction:"down",pid:post_id},
+          data:{type:"vote",value:"1",pid:post_id},
           success:function(data){console.log(data)},
           error: function() {console.log("error in upvoting post id: "+post_id)}
         });
     }
     else if (parent.getAttribute("voted") == "down"){ // if downvote has already been casted
       elemnt.children[0].setAttribute("src","../images/upfilled.png");
-      elemnt.style = "background-color:rgb(110, 0, 255)";
+      elemnt.style.backgroundColor = "rgb(110, 0, 255)";
       parent.children[2].children[0].setAttribute("src","../images/down.png");
-      parent.children[2].style="background-color:black";
+      parent.children[2].style.backgroundColor="rgb(0,200,200)";
       parent.setAttribute("voted","up");
       vote_element.innerHTML = String(Number(vote_element.innerHTML)+2);
       $.ajax({
         type:"POST",
         url:post_dir,
-        data:{type:"vote",value:"jump",direction:"up",pid:post_id},
+        data:{type:"vote",value:"1",pid:post_id},
         success:function(data){console.log(data)},
         error: function() {console.log("error in upvoting post id: "+post_id)}
       });
@@ -220,41 +433,41 @@ function vote(elemnt,vote_type) { // the vote function that needs to be utilised
   else if (vote_type ==  "down"){
     if (parent.getAttribute("voted") == "0") {
       elemnt.children[0].setAttribute("src","../images/downfilled.png")
-      elemnt.style = "background-color:red";
+      elemnt.style.backgroundColor = "red";
       parent.setAttribute("voted","down");
       vote_element.innerHTML = String(Number(vote_element.innerHTML)-1);
       $.ajax({
         type:"POST",
         url:post_dir,
-        data:{type:"vote",value:"downvote",pid:post_id},
+        data:{type:"vote",value:"0",pid:post_id},
         success:function(data){console.log(data)},
         error: function() {console.log("error in upvoting post id: "+post_id)}
       });
     }
     else if (parent.getAttribute("voted") == "down") {
       elemnt.children[0].setAttribute("src","../images/down.png");
-      elemnt.style = "background-color: rgb(45,45,45)";
+      elemnt.style.backgroundColor = "rgb(0,200,200)"
       parent.setAttribute('voted',"0");
       vote_element.innerHTML = String(Number(vote_element.innerHTML)+1);
       $.ajax({
         type:"POST",
         url:post_dir,
-        data:{type:"vote",value:"neutralise",direction:"up",pid:post_id},
+        data:{type:"vote",value:"0",pid:post_id},
         success:function(data){console.log(data)},
         error: function() {console.log("error in upvoting post id: "+post_id)}
       });
   }
     else if (parent.getAttribute("voted") == "up") {
       elemnt.children[0].setAttribute("src","../images/downfilled.png"); // set downvote image to filled
-      elemnt.style = "background-color:red"; // set the downvote background color red
+      elemnt.style.backgroundColor = "red"; // set the downvote background color red
       parent.children[0].children[0].setAttribute("src","../images/up.png");
-      parent.children[0].style = "background-color:rgb(45,45,45)";
+      parent.children[0].style.backgroundColor = "rgb(0,200,200)";
       parent.setAttribute("voted","down");
       vote_element.innerHTML = String(Number(vote_element.innerHTML)-2);
       $.ajax({
         type:"POST",
         url:post_dir,
-        data:{type:"vote",value:"jump",direction:"down",pid:post_id},
+        data:{type:"vote",value:"0",pid:post_id},
         success:function(data){console.log(data)},
         error: function() {console.log("error in upvoting post id: "+post_id)}
       });
@@ -290,19 +503,45 @@ function init_vote() {
 
 
 // GENERATION 2 FUNCTIONS START
-function post_form(elem,args,trim=true) {
+function post_form(elem,args,trim=true,msg=null) {
+  var form = elem.closest("form,.form");
+
+  var children = form.getElementsByTagName("*"); // This is actually the descendents and not the children only
+  /*for (let key in ext) {
+    // dataSet[key] = ext[key];
+    console.log(ext)
+  }*/
+  var ajaxURL = args["url"]
+  var prompt = form.getElementsByClassName("p")[0]
+  if (args["redirect"] == undefined) {
+    args["redirect"] = window.location.href
+  }
       if (args["success"] == undefined) {
         ajaxSuccess = function(data) {
           if (data == "0") {
-            window.location.reload(true)
+            if (args["redirect"] == window.location.href) {
+              window.location.reload(true)
+            }
+            else {
+              console.log('trying redirect')
+              window.location.href = args["redirect"]
+            }
           }
           else {
+            console.log('Error incoming: '+data)
             prompt.innerHTML = data
           }
         }
       }
       if (args["success"] != undefined) {
-        ajaxSuccess = args["success"]
+        ajaxSuccess = function(data){
+          if (data == 0) {
+            args["success"]()
+          }
+          else {
+            prompt.innerHTML = data
+          }
+        }
       }
       if (args["error"] == undefined) {
         ajaxError = function() {
@@ -321,20 +560,14 @@ function post_form(elem,args,trim=true) {
           dataSet[key] = args["ext"][key]
         }
       }
-      var form = elem.closest("form");
-      var children = form.getElementsByTagName("*"); // This is actually the descendents and not the children only
-      /*for (let key in ext) {
-        // dataSet[key] = ext[key];
-        console.log(ext)
-      }*/
-      var ajaxURL = args["url"]
-      var prompt = form.getElementsByClassName("p")[0]
+
       for (var i = 0; i < children.length; i++) {
         let child = children[i];
         if (child.tagName == 'INPUT' || child.tagName == "TEXTAREA") {
-          console.log(child)
+          // console.log(child)
           let name = child.name;
           let value = child.value;
+          // console.log(`${name}: ${value}`)
           if (trim == true) {
             name = name.trim()
             value = value.trim()
@@ -343,8 +576,12 @@ function post_form(elem,args,trim=true) {
         }
 
       }
-      // console.log(dataSet)
+      console.log(dataSet)
       // console.log(prompt)
+      // console.log(prompt);
+      if (msg != null) {
+        prompt.innerHTML = msg
+      }
       $.ajax(
         {data:dataSet,
         success:function(data) {
@@ -359,7 +596,76 @@ function post_form(elem,args,trim=true) {
 
   }
 
+function post_data(elem,args,reload=true,msg="Data Sent") {// Used to send in raw data instead of scanning a form
+  if (dictEmpty(args)) {
+    console.error("post_data() Requires arguments as a dictionary only") // If there are no arguments provided in the args field or argument
+  } else { // otherwise
+    if (dictEmpty(args["ext"])) { // if the ext field is not defined then we will throw an error
+      console.error("In order to send across data, data needs to be put into the ext argument")
+    } else {
+      // Initialiate all the variables
+      if (args["url"] == undefined) {
+        console.error("URL needs to be specified")
+      } else {
+        var newLoc = args["url"]
+        if (args["redirect"] == undefined) {
+          var direct = window.location.href
+        } else {
+          var direct = args["redirect"]
+        }
+        let form = elem.closest("form,.form"); // find the nearest form element that it is contained within
+        let prompt = form.getElementsByClassName("p")[0]; // get the prompt element
+        let dataSet = args["ext"] // initiate dataset variable
+        if (args["success"] == undefined) {
+          ajaxSuccess = function (data){
+            if (data == 0) {
+              if (reload == true && direct != window.location.href) {
+                window.location.href = direct
+              }
+            } else {
+              prompt.innerHTML = data
+            }
 
+          }
+        }
+        if (args["success"] != undefined) {
+          ajaxSuccess = function(data){
+            if (data == 0) {
+              args["success"]()
+            }
+          }
+        }
+        if (args["error"] == undefined) {
+          ajaxError = function (data) {
+            prompt.innerHTML = "Sorry, Internal server error";
+            console.error('Internal server error');
+          }
+        }
+        if (args["error"] != undefined) {
+          ajaxError = args['error']
+        }
+        var request = {
+          type:'POST',
+          url:newLoc,
+          data:dataSet,
+          success:function(data){
+            ajaxSuccess(data)
+          },
+          error:function(data){
+            ajaxError(data)
+          }
+        };
+        console.log(request)
+        // console.log(prompt)
+        prompt.innerHTML = msg
+        $.ajax(request)
+
+      }
+
+
+    }
+  }
+}
 
 
 
@@ -394,7 +700,7 @@ function post_comment(element) {
       url:"comment.php",
       data:dict,
       success:function (data) {
-        if (data == "1") {
+        if (data == "0") {
           window.location.reload(true);
         }
         else {
@@ -503,6 +809,34 @@ function comm_func(button,func) { // function for the comment buttons
   }
 
 }
+function search(elem,output){
+  var frame = $(elem).closest(".searchFrame");
+  var searchables = frame.find("[searchable]");
+  // console.log(searchables)
+  for (let searchElem of searchables) {
+    let value = elem.value.toLowerCase();
+    let match = searchElem.textContent.toLowerCase().indexOf(value)
+    if (match == -1) {
+      searchElem.style.display = "none"
+      // console.log("not found match")
+    }
+    else {
+      searchElem.style.display = output;
+      // console.log("found maatch")
+    }
+    // console.log(`${searchElem.textContent}: ${match}`)
+  }
+}
+function toggleActiveElem(elem){ // Make more advanced later
+  elem = $(elem);
+  let frame = elem.closest("[toggleElem]");
+  // console.log(frame)
+  let currentActive = frame.find(".active");
+  if (currentActive != elem) {
+    currentActive.removeClass("active")
+  }
+  elem.addClass("active")
+}
 
 
 
@@ -511,11 +845,93 @@ function comm_func(button,func) { // function for the comment buttons
 
 
 
+// Loaders / Globalscripts
+function afterload(func){
+      let load = window.onload;
+      if (load == null || load==undefined|| typeof load != "function") {
+        // console.log("Starting with fresh onload")
+        window.onload = function() {
+          func()
+        }
+      }
+      else {
+        // console.log("Starting with appended onload")
+        window.onload = function(){
+          load();
+          func()
+        }
+      }
+    }
+function loadmore(loadmore){
+  let parent = loadmore.parentElement;
+  console.log([parent,loadmore])
+  // console.log(loadmore)
+  let type = loadmore.getAttribute('type');
+  let offset = Number(loadmore.getAttribute('offset'));
+  let request = {"type":type,"offset":offset};
+  // console.log(request);
+    $.ajax({
+      type:"POST",
+      url:"Session/loadmore.php",
+      data:{"offset":offset,"type":type},
+      success:function(response){
+        // console.log(response);
+        response = JSON.parse(response);
+        // console.log(response);
+        posts = document.getElementById("posts");
+        for(let post of response.posts){
+          // place response here
+          posts.innerHTML += `<div class='post' post-id='${post.id}'>
+          <span class='info-wrapper' onclick='window.location.href="../users/${post.post_usr}.php"'>
+            <img src='../dps/${post.user_img}' alt=''>
+            <span>${post.user_disp}</span><br>
+            <span class='usr'>${post.post_usr}</span>
+          </span><br>
+            <textarea readonly name='title' class='title' rows='1'>${post.title}</textarea><br><br>
+            <textarea class='postContent' name='content' readonly>${post.content}</textarea>
+            <span class='p'></span>
+            ${post.edit}
+            <div class='vote-section' voted='${post.vote_type}'>
+              <button class='upvote' onclick='vote(this,"up")'>
+                <img src='../images/up.png' class='button'>
+              </button>
+              <p class='score'>${post.rep}</p>
+              <button class='downvote' onclick='vote(this,"down")'>
+                <img src='../images/down.png' class='button' >
+              </button>
+            </div><br>
+            <button class='right'><a href='http://projhost:8088/Session/view-post.php?id=${post.id}'>View post</a></button>
+          </div>`
+        }
+        if (response.loadmore == true) {
+          loadmore = parent.getElementsByClassName('loadmore')[0];
+          offset = loadmore.getAttribute('offset');
+          loadmore.setAttribute('offset',offset+5)
+          parent.removeChild(loadmore);
+          parent.appendChild(loadmore)
+        }
+        else {
+          parent.removeChild(loadmore);
+        }
+      }
+    });
 
 
 
 
-
+}
+function GlobalScript(scripts){
+	var location = baseName(window.location.href);
+  if (scripts["*"] != undefined){
+    scripts["*"]()
+  }
+	if (scripts[location] != undefined) {
+	   afterload(function(){
+       scripts[location]()
+     })
+	}
+  console.log("%cGlobalscripts loaded","color:green;font-weight:bold")
+}
 
 
 
@@ -543,3 +959,4 @@ function constructElem(name,html,data){
   elem.innerHTML = html;
   return elem;
 }
+console.log("%c Main.js Loaded","font-weight:bold;color:lightgreen")

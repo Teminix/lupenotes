@@ -1,13 +1,13 @@
 <?php
 
-require "lib.php";
+require "php/lib.php";
 session_start();
 $prompt = "prompt"; //Set the prompt variable
 $rescharset = array("form" =>concat_array(strtoarray("{}[]:;|\\<>?,./!@#$%^&*()"),["'",'"']));
 
 
 if(!$_SERVER['REQUEST_METHOD']=="POST") { //if method is not a post
-  header("location:index.php");
+  header("location:main.php");
 }
 if ($_SERVER['REQUEST_METHOD'] == "POST") { // if method is post
   $type = $_POST["type"]; // declare submission type var as $type
@@ -43,21 +43,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") { // if method is post
       if ($check == 0) {//if not
         if (verify_email($email)) {
           // echo "Elligible email address";
-          $query = "INSERT INTO users (usr,email,display,pwd) VALUES ('$usr','$email','$display','$pwd')"; // insert user query
+          $code = rand_str(14);
+          $query = "INSERT INTO users (usr,email,v_code,display,pwd) VALUES ('$usr','$email','$code','$display','$pwd')"; // insert user query
           $res = $conn->query($query); // execut $query and store in $res just in case
           $_SESSION["usr"] = $usr; // Set usr Session variable
           $_SESSION["display"] = $display; // Set display name session variable
-          $temp_data = file_get_contents("temps/user-template.txt"); // get the data of the template file
-          $usr_file = fopen("users/$usr.php","w"); // open/create a new file with the username as the name of the file with php extension
-          fwrite($usr_file,$temp_data); // write to the $usr_file
-          fclose($temp_file);
-          fclose($usr_file);
           echo "0";
         } else {
           echo "Invalid email address";
         }
-
-
       }
     }
 

@@ -1,18 +1,14 @@
-
 :root {
   --sexy-purple:rgb(91, 2, 216);
 }
-a {
-  text-decoration: none;
-  color:blue;
-  display: inline-block;
-  transition: 0.4s;
-}
-a:hover {
-  color:lightblue;
-  transform: scale(1.1);
-}
 
+
+
+
+input::selection {
+  color:black;
+  background-color:yellow;
+}
 
 
 /* FONTS START */
@@ -35,21 +31,11 @@ div#status {
   color:red;
   font-size: 15px;
 }
-div.nav {
-  display: block;
-  background-color: black;
-  overflow:hidden;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  padding-right:10px;
-  padding-left:10px;
-  height: 58px;
-}
+
 div.nav .nav-item {
-  color:white;
+  color:black;
   display: inline-block;
   font-family: PT-mono;
-  padding-right: 10px;
   height: 100%;
   overflow:hidden;
 }
@@ -84,19 +70,19 @@ div.nav img {
 /* DIVS END */
 
 /* FORMS START */
-form { //form
+form, .form { //form
   display: inline-block;
-  background-color:black;
-  color:white;
+  background-color:white;
+  color:black;
   font-family: arial;
   padding:10px;
   width:20%;
   overflow:hidden;
-
+  border-radius:20px;
 }
 form input { //input
-  color:white;
-  background-color: rgba(16,16,16,0.45);
+  color:black;
+  background-color: white;
   margin-top:10px;
   margin-bottom: 10px;
   border:0;
@@ -105,17 +91,19 @@ form input { //input
   transition: 0.45s;
 }
 form input[type="text"], form input[type="password"] {
-  color:white;
+  color:black;
   padding:8px;
 }
 form input[type="text"]:focus, form input[type="password"]:focus {
   outline:0;
-  border-bottom: white 3px solid;
-  transform: scale(1.1)
+  background-color:rgb(0,200,200);
+  transform: scale(1.1);
+  border-radius:20px;
+  color:white;
 }
 form button {
   color:white;
-  background-color: red;
+  background-color: rgb(0,200,200);
   cursor: pointer;
   transition: 0.5s;
   padding-left: 20px;
@@ -137,29 +125,6 @@ form button:hover {
 /* MISCELLANEOUS TAGS END */|
 /* HEADERS START */
 
-h1 {
-  font-family: arial;
-  color:white
-}
-h2 {
-  font-family: arial;
-  color:white
-}
-h3 {
-  font-family: arial;
-  color:white
-}
-h4 {
-  font-family: arial;
-  color:white
-}
-h5 {
-  font-family: arial;
-  color:white
-}
-h6 {
-  font-family: arial;
-  color:white
-}
+
 
 /* HEADERS END */

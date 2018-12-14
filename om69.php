@@ -59,7 +59,7 @@ function stringToArray($s)
 
 
   if(!$_SERVER['REQUEST_METHOD']=="POST") {
-    header("location:index.php");
+    header("location:main.php");
   }
     if ($_POST['sub'] == "Register") { //If form is a register type
       $usr = $_POST['usr'];

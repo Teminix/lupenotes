@@ -1,4 +1,4 @@
-var Modal = {
+const Modal = {
   show:function(modalName) { // To show the modal
     try {
       let modal = getByAttr("modal",modalName)[0];
@@ -66,29 +66,29 @@ var Modal = {
     }
   },
   initiate:function() { // To initiate the Modals
-    var modals = this.getModal();
-    document.body.onkeyup = function(e) {
-      var modal = Modal.getActiveModal();
-      if (modal != null) {
-        if (e.keyCode == 27) {
-            Modal.hide(modal.getAttribute("modal"))
+      var modals = this.getModal();
+      document.body.onkeyup = function(e) {
+        var modal = Modal.getActiveModal();
+        if (modal != null) {
+          if (e.keyCode == 27) {
+              Modal.hide(modal.getAttribute("modal"))
+          }
+
         }
+      }
+      for(let modal in modals) {
+        modal = modals[modal];
+        modal.setAttribute("shown","0");
 
       }
+      console.log("%c Modals Initiated","font-weight:bold;color:lightblue")
     }
-    for(let modal in modals) {
-      modal = modals[modal];
-      modal.setAttribute("shown","0");
-      
-    }
-
-  },
+  ,
   toggle:function(name) {
-      let modal = this.getModal();
+      modal = this.getModal();
       modal = modal[name]
       if (modal == undefined) {
         console.error("Undefined Modal: "+"'"+name+"'")
-
       }
       else{
         modal = Modal.getModal();
@@ -109,7 +109,6 @@ var Modal = {
           modal.style.display = "none"
         }
       }
-
     },
     getActiveModal:function() {
       var modals = Modal.getModal();
@@ -122,3 +121,4 @@ var Modal = {
       return null
     }
   }
+console.log("%c Modals Loaded","font-weight:bold;color:lightgreen")

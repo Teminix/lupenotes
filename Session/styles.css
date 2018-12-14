@@ -1,8 +1,17 @@
-
-
-
+@import "../styles/colors.css";
+@import "../styles/animations.css";
+a, center {
+  font-family: PT-mono
+}
 body, html {
-  height: 100%
+  font-family:PT-mono;
+  height: 100%;
+  background-color: lightgrey;
+  background-image:url('http://projhost:8088/images/back.jpeg');
+  background-size: 100%;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+
 }
 /* FONTS START */
 
@@ -29,19 +38,22 @@ body, html {
 /* DIVS START */
 div.nav {
   display: block;
-  background-color: black;
+  background-color: white;
   overflow:hidden;
   margin-top: 10px;
   margin-bottom: 10px;
   padding-right:10px;
   padding-left:10px;
   height: 58px;
+  transition:0.4s;
+}
+div.nav:hover {
+  border-radius:10px;
 }
 div.nav .nav-item {
-  color:white;
+  color:black;
   display: inline-block;
   font-family: PT-mono;
-  padding-right: 10px;
   height: 100%;
   overflow:hidden;
 }
@@ -50,6 +62,7 @@ div.nav .nav-item div {
   display: block;
   padding:20px 0px;
 }
+
 div.nav .nav-item a {
   color:inherit;
   display: block;
@@ -59,9 +72,13 @@ div.nav .nav-item a {
   padding-left: 10px;
   padding-right:10px;
   transition:0.5s;
+  cursor:pointer;
 }
-div.nav .nav-item a:hover {
-  background-color:rgb(91, 2, 216);
+div.nav .nav-item a.image {
+  padding:10px;
+}
+div.nav .nav-item a:hover, {
+  background-color:black;
   color:black;
   transform:none;
 }
@@ -69,14 +86,28 @@ div.nav .nav-item.right {
   float:right;
   clear: left;
 }
+.right {
+  float:right;
+  clear:left
+}
 div.nav img {
   height:40px;
   width: auto;
 }
+div.nav .nav-item.active {
+  color:rgb(0,200,200);
+  background-color: inherit;
+}
+div.container {
+  background-color:rgba(200,200,200,0.5);
+  padding:20px;
+  border-radius:20px;
+}
 /* DIVS END */
 .header {
-  background-color:rgb(100,100,100);
+  background-color:rgb(0,255,191);
   font-size: 30px;
+  color:white;
   font-family: PT-mono;
 }
 
@@ -90,36 +121,40 @@ img#prev {
   border: white 7px solid;
 }
 .post {
-  background-color:rgb(15,15,15);
+  background-color:white;
   padding:4px;
+  color:black;
+  border-radius:20px;
   margin:15px;
   overflow:hidden;
-  border-left: orange solid 3px;
+  border-left: #00ffbf solid 6px;
 }
 .main {
-  background-color: black;
+  background-color: white;
   padding:20px;
-  color:white;
+  color:black;
   display: inline-block;
   margin-left: 20%;
   margin-right: 20%;
   margin-bottom: 15px;
   min-width: 60%;
   width:auto;
-  font-family: arial;
+  font-family: PT-mono;
+  border-radius:20px;
+  animation:enter-scale 0.5s;
 }
 .score {
   display:inline-block;
-  color:white;
+  color:black;;
 }
 .vote-section {
   display:inline-block;
 }
 button {
-  background-color: rgb(45,45,45);
+  background-color: rgb(0,200,200);
   color:white;
   font-family: PT-mono;
-  border-radius: 0;
+  border-radius: 5px;
   border:0;
   padding-left: 10px;
   padding-right: 10px;
@@ -157,8 +192,8 @@ button:focus {
 .main span input, .div input,input {
   font-family: inherit;
   font-size: inherit;
-  background-color: black;
-  color:white;
+  background-color: white;
+  color:black;
   caret-color: white;
   border:0;
   padding-right: 5px;
@@ -168,13 +203,13 @@ button:focus {
 .div input, input {
   font-family: PT-mono;
   padding: 10px;
-  padding-bottom: 3px;
   font-size:15px;
 }
 .div input:focus, input:focus {
-  border-bottom: rgb(91, 2, 216) solid 4px;
-  background-color: rgb(35,35,35);
+  background-color: rgb(0,200,200);
   outline:0;
+  border-radius:20px;
+  color:white;
 }
 
 /* POST BUTTONs START*/
@@ -192,15 +227,23 @@ button[purpose='post'] {
   margin-right:15px;
   margin-left:15px
 }
-/* TEXT AREA STUFF*/
+
+.highlighted {
+  background-color:var(--sexy-purple)
+}
+/* TEXT AREA STUFF */
 
 textarea {
   width:95%;
   resize: none;
-  color:white;
-  background-color: rgb(35,35,35);
-  caret-color: white;
+  color:black;
+  height:auto;
+  overflow:show;
+  background-color: white;
+  caret-color: black;
   padding:5px;
+  padding-left:20px;
+  padding-right:20px;
   transition: 0.4s;
   border:none;
   font-family: PT-mono;
@@ -208,29 +251,47 @@ textarea {
 textarea::placeholder {
   color:gray;
 }
+textarea::selection {
+  background-color:yellow;
+  color:black;
+}
 textarea:focus {
   outline:0;
   animation: curentlyediting 3s infinite;
+  background-color:rgb(0,200,200);
+  color:white;
+  border-radius:20px;
 }
-textarea.title {
+textarea.title, .title {
   font-size: 25px;
+  font-family:PT-mono;
+  margin:10px
 }
-textarea.postContent {
+.postContent {
   min-height: 100px;
   height: auto;
+  max-height:1000px;
+  font-family:PT-mono;
   font-size: 13px;
+  overflow-y  :auto;
 }
 textarea[readonly]{
-  background-color: black;
+  background-color: white;
 }
-
+textarea[readonly]{
+  color:black;
+  border-radius:0;
+  animation:none;
+  border-bottom:0;
+}
 
 
 /* TEXT AREA STUFF END*/
 
 /* SPAN CLASSED/IDS START */
 span.title {
-  color:white;
+  color:black;
+  font-weight:bold;
   font-family: PT-mono;
   font-size: 25px;
 }
@@ -265,8 +326,9 @@ span.title {
   margin: 20% auto;
   padding: 20px;
   width: 25%;
-  background-color:rgb(0, 0, 0);
-  color:white;
+  background-color:white;
+  color:black;
+  border-radius:20px;
   font-family: PT-mono;
 }
 
@@ -293,7 +355,7 @@ a {
 }
 .comments {
   display: block;
-  background-color: rgb(50,50,50);
+  background-color: rgb(230,230,230);
   width: 100%;
   min-height: 100px;
   height:auto;
@@ -303,51 +365,79 @@ a {
   margin-left:0px;
   padding: 20px;
   padding-left:10px;
-
+  border-radius:20px;
 }
 .comment {
   color:white;
-  background-color: rgba(200,200,200,0.3);
+  background-color: white;
   padding:20px;
   font-family: PT-mono;
-  border-left:5px solid orange;
+  border-left:5px solid rgb(0,200,200);
   margin-left: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
   font-size: 17px;
   transition:0.7s;
   overflow: visible;
+  color:black;
 }
-.comment .info-wrapper {
-  display: inline-block;
+span.info-wrapper {
+  display: block;
   margin-bottom: 10px;
   transition: 0.3s
 }
-.comment .info-wrapper * {
+.info-wrapper * {
   transition: 0.5s
 }
-.comment .info-wrapper:hover {
+span.info-wrapper:hover {
   cursor: pointer;
-
+  color:white;
+  padding:20px;
+  border-radius:20px
 }
-.comment .info-wrapper:hover span {
+span.info-wrapper:hover span {
   color:blue;
 }
-.comment .info-wrapper span {
+span.info-wrapper span {
   color:white;
   font-size: 13px;
   margin:0;
 }
-.comment .info-wrapper span.usr {
-  color:gray;
+span.info-wrapper span.usr {
+  color:inherit;
+  margin-top:-5px;
   font-size: 10px;
   display: inline-block;
   transform: translateY(-7px);
 }
-.comment .info-wrapper img {
+span.info-wrapper:hover span.usr {
+  font-size:13px;
+  background-color:white;
+  padding:3px;
+  border-radius:5px;
+  color:black;
+}
+.comment span.info-wrapper:hover span.usr {
+  padding:3px;
+  background-color:initial;
+  border-radius:5px;
+  color:black;
+  font-size: 7px;
+}
+span.info-wrapper span.usr a {
+  font-size:inherit;
+}
+ span.info-wrapper img {
   height:35px;
   width:35px;
+  border-radius:900px;
   display: block;
+}
+.post .info-wrapper span {
+  color:black;
+}
+.post .info-wrapper span:hover {
+  color:blue
 }
 .comment-form {
   border-top: 7px white solid;
@@ -360,11 +450,7 @@ a {
   width:100%;
 }
 
-.comment-form textarea:focus, textarea[comment]:focus {
-  animation:none;
-  border-left: white solid 6px;
-  padding-left: 20px;
-}
+
 
 .comment .buttons .mini_button {
   background-color: rgba(0,0,0,0);
@@ -390,7 +476,7 @@ a {
 
 .prompt, .p  {
   color:red;
-  font-size:1px;
+  font-size:13px;
   font-family: PT-mono;
 }
 
@@ -398,5 +484,156 @@ a {
 /* HEADINGS */
 
 h1, h2, h3, h4, h5, h6 {
-  font-family:PT-mono
+  font-family:PT-mono;
+  color:black;
+}
+
+
+
+
+/* Tooltips and normal tips */
+span.tip {
+  color:black;
+  font-size:10px;
+}
+.tooltip-wrapper {
+  position:relative;
+
+}
+.tooltip-wrapper .tooltip {
+  display:none;
+  position:absolute;
+  left:-10px;
+  color:black;
+  background-color:yellow;
+  border-radius:5px;
+  font-size:13px;
+  min-width:100px;
+  width:auto;
+  text-align: center;
+  word-wrap: normal;
+}
+.tooltip-wrapper:hover .tooltip {
+  display:block
+}
+.searchframe {
+  display:inherit;
+}
+
+.active {
+  background-color:rgb(0,200,200);
+  color:white;
+}
+.active a {
+
+}
+
+/*  EXTRAS  */
+.info {
+  display:block;
+  background-color: rgb(200,200,200);
+  border-radius:50px;
+  margin-top:20px;
+  margin-bottom:20px;
+  padding:10px;
+  color:grey;
+  text-align:center;
+  font-family:PT-mono;
+  font-size:20px;
+}
+
+
+
+
+
+
+
+/* CIRCLES */
+
+:root {
+  --radius:100px
+}
+.circle {
+  text-align:center;
+  /*vertical-align: middle;*/
+  padding:0;
+  background-color:#9054c4;
+  box-shadow:10px 10px 10px gray;
+  display:inline-block;
+  border:white solid 5px;
+  font-family:PT-mono;
+  color:white;
+  transition:0.4s;
+  overflow:hidden;
+  margin:10px;
+  cursor:pointer;
+  background-size:cover;
+}
+.circle-wrapper {
+  display:inline-block;
+  position: relative;
+  vertical-align: middle;
+  overflow:hidden;
+  line-height: normal;
+}
+.circle .title,.circle .description {
+  transition:0.4s;
+}
+.circle .description {
+  margin-top:10px;
+  margin-bottom:10px;
+  display:none;
+  transition:0.4s
+}
+
+.circle:hover .title {
+  font-size:50px;
+  background-color:black;
+  border-radius:10px;
+  padding:10px;
+}
+.circle:hover .description {
+  font-size:20px;
+  background-color:black;
+  display:inline-block;
+  padding:5px;
+  border-radius:5px;
+}
+.circle-wrapper:hover .title,.circle-wrapper:hover .description {
+  transform:scale(0.9)
+}
+body {
+  overflow-x: visible;
+  min-width: 100%;
+  width:auto;
+}
+
+
+
+
+
+/* Load more */
+
+.loadmore {
+  display:block;
+  color:black;
+  background-color:white;
+  margin:40px 10px;
+  margin-bottom:10px;
+  font-size:25  px;
+  text-align: center;
+  padding:20px 10px;
+  border-radius:20px;
+  cursor:pointer;
+  transition:0.5s
+}
+.loadmore:hover {
+  color:white;
+  background-color:rgb(0,200,200);
+}
+.dp {
+  border-radius:900px
+}
+.util {
+  border-radius:900px;
 }

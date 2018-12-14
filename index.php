@@ -1,72 +1,81 @@
 <?php
 session_start();
-include "lib.php";
+$conn = new mysqli('localhost','root','root','project');
  ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Registration page</title>
+    <title>Lupenotes</title>
     <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="/Session/styles.css">
     <script src="scripts/Libraries/jquery.js" charset="utf-8"></script>
-    <script type="text/javascript">
-      function EnterRegister() {
-          var user = document.getElementsByName('usr')[0].value;
-          var pass = document.getElementsByName('pwd')[0].value;
-          var displayName = document.getElementsByName('display')[0].value;
-          var email_addr = document.getElementsByName('email')[0].value;
-          var verif_pass = document.getElementsByName('pwd')[1].value;
-          var subtype = $("#submit").val();
-          $.ajax({
-            type:"POST",
-            url:"process.php",
-            data:{ usr:user,display:displayName,pwd:pass,verif_pwd:verif_pass,email:email_addr,type:subtype },
-            success: function(data) {
-              if (data == "0") {
-                window.location.href = "Session/session.php";
-              }
-              else {
-              $("#status").html(data);}
-            },
-            error: function() {
-              $("#status").html("Some error has occured during registration")
-            }
-
-          });
-    };
-    </script>
+    <script src="scripts/js/main.js" charset="utf-8"></script>
+    <script src="scripts/js/Globalscript.js" charset="utf-8"></script>
+    <style media="screen">
+    .cover {
+      text-align:center;
+      font-size:120px;
+      color:white;
+    }
+      #box {
+        border-bottom:white 5px solid;
+        display:inline-block;
+        padding:40px;
+      }
+    </style>
   </head>
   <body>
     <div class="nav">
-      <?php $path = __FILE__;
-      echo temp("temps/nav.php",["path"=>$path]); ?>
+      <div class="nav-item">
+        <a href="main.php">REGISTER</a>
+      </div>
+      <?php
+        if(!isset($_SESSION['usr'])){
+          echo '<div class="nav-item">
+            <a href="login.php">LOGIN</a>
+          </div>';
+        }
+        ?>
+      <div class="nav-item">
+        <a href="communities.php">LUPES</a>
+      </div>
+      <div class="nav-item">
+        <a href="users.php">USERS</a>
+      </div>
+      <?php
+          if(isset($_SESSION['usr'])){
+            $usr= $_SESSION['usr'];
+            $res = $conn->query("SELECT * FROM users WHERE usr='$usr'")->fetch_assoc();
+            $image = $res['image'];
+            echo "<div class='nav-item right'>
+              <a href='Session/session.php' class='image'>
+                <img src='dps/$image' />
+              </a>
+            </div>";
+          }
+       ?>
     </div>
     <center>
-
-
-      <form method="POST">
+      <img src="images/icon-white.png" alt="">
+    </center>
+    <h1 class="cover" style='margin-top:20px;margin-bottom:20px'>LupeNotes</h1>
+    <div>
+      <center>
+      <div id="box">
         <center>
-          Register now!<br><br>
-          <input type="text" name="usr" placeholder="Username*" required onkeypress="if (event.keyCode == 13) {EnterRegister()}"><br>
-          <span style="color:white; font-size:10px">* Username is case insensitive</span><br>
-          <input type="text" name="display" placeholder="Dispay name*" required onkeypress="if (event.keyCode == 13) {EnterRegister()}"><br>
-          <input type="text" name="email" placeholder="Email address*" required onkeypress="if (event.keyCode == 13) {EnterRegister()}"><br>
-          <input type="password" name="pwd" placeholder="Password*" required onkeypress="if (event.keyCode == 13) {EnterRegister()}"><br>
-          <input type="password" name="pwd" placeholder="Verify Password*" required onkeypress="if (event.keyCode == 13) {EnterRegister()}"><br>
-          <div id="status"></div>
-           <br><br>
-           <button type="button" id="submit" value="register">Register</button>
-          <br><br>
-          Already have an account?<br>
-          <a href="login.php">Go here!</a>
-      </center>
-      </form>
-  </center>
-  <script type="text/javascript">
-  $(function () {
-    $("#submit").click(function() {EnterRegister()});//$("#submit")
-  });//function()//
-
-  </script>
+          Note taking...
+        </center>
+        <center>
+          Now sharable and scalable
+        </center>
+      </div>
+    </center>
+    </div>
+    <script type="text/javascript">
+      let text1 = q('#box').children[0];
+      let text2 = q('#box').children[1];
+      MultiType([text1,text2]);
+    </script>
   </body>
 </html>

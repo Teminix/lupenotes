@@ -1,7 +1,6 @@
 <?php
 
-// Link with include: include __DIR__."/php/lib.php;
-// Link with require: require __DIR__."/php/lib.php;
+$root_dir = "http://projhost:8088/";
 function getfname($suff = ""){
   return basename(__FILE__,$suff);
 }
@@ -66,4 +65,72 @@ function verify_email($string) { // checks if the email address is valid
     return true;
   }
 }
+
+
+
+
+
+
+// TEMPLATE GENERATION 2 function
+
+function local($file)
+{
+  $uri = explode("/",$_SERVER["REQUEST_URI"]);
+  $count =  count($uri)-2;
+  unset($uri[$count+1]);
+  unset($uri[$count]);
+  unset($uri[0]);
+  $file = str_replace(" ",'%20',$file);
+  array_push($uri,$file);
+  return "http://".$_SERVER["HTTP_HOST"]."/".implode("/",$uri);
+}
+function basic_curl($file) {
+  $curl = curl_init();
+  curl_setopt($curl,CURLOPT_URL,$file);
+  curl_setopt($curl,CURLOPT_HEADER,false);
+  curl_setopt($curl,CURLOPT_RETURNTRANSFER,true);
+  $result = curl_exec($curl);
+  $curl_close($curl);
+}
+function temp_curl($path,$data=NULL,$root=NULL,$debug=NULL) {
+  if ($root != NULL) {
+    $path = $root.$path;
+  }
+  if ($data == NULL) { // If there is no data needed for the template
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_URL,$path);
+    curl_setopt($curl,CURLOPT_RETURNTRANSFER,true);
+    curl_setopt($curl,CURLOPT_HEADER,false);
+    $result = curl_exec($curl);
+    curl_close($curl);
+    return $result;
+  }
+
+  else {
+    if (strpos($path,"?") === FALSE) {
+      $path = $path."?";
+    }
+    else {
+      $path = preg_replace('/\$+/gi',"?",$path);
+    }
+    foreach ($data as $key => $value) {
+      $path = $path."$key=$value&";
+    }
+    $curl = curl_init();
+    // $path = local($file);
+
+    curl_setopt($curl, CURLOPT_URL,$path);
+    curl_setopt($curl,CURLOPT_RETURNTRANSFER,true);
+    curl_setopt($curl,CURLOPT_HEADER,false);
+    $result = curl_exec($curl);
+    curl_close($curl);
+    if ($debug == TRUE) {
+      return $path.$result;
+    }
+    return $result;
+  }
+
+
+}
+
  ?>

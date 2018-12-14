@@ -4,18 +4,36 @@ session_start();
     if (isset($_SESSION["usr"])) {
       // echo "successfully sent comment lol";
       if ($_POST["type"] == "write") {
-        $usr  = $_SESSION["usr"];
+        $time = time();
+        $usr = $_SESSION["usr"];
         $conn = new mysqli("localhost","root","root","project");
-        $content = mysqli_real_escape_string($conn,$_POST["comment-content"]);
-        $node = $_POST["node"];
-        $postid = $_POST["post_id"];
-        if ($content == "") {
-          echo "You need to fill in some content of the comment!";
+        $timestamp = $conn->query("SELECT timestamp FROM comments WHERE usr='$usr' ORDER BY ID DESC LIMIT 1");
+        if (gettype($timestamp) == 'boolean') {
+          // echo "null";
+          $timestamp = null;
+        } else {
+          // echo "Not null";
+          $timestamp = $timestamp->fetch_assoc()['timestamp'];
         }
-        else {
-          $res = $conn->query("INSERT INTO comments (usr,content,post_id,node) VALUES ('$usr','$content','$postid','$node')");
-          echo "1";
+        $difference = floor(($time-$timestamp)/60);
+        if($difference < 5){
+          echo "You have already commented earlier, wait for another ".(5-$difference)." minute(s)";
         }
+        else{
+          $content = mysqli_real_escape_string($conn,$_POST["comment-content"]);
+          $node = $_POST["node"];
+          $postid = $_POST["post_id"];
+          if ($content == "") {
+            echo "You need to fill in some content of the comment!";
+          }
+          else {
+
+            $res = $conn->query("INSERT INTO comments (timestamp,usr,content,post_id,node) VALUES ($time,'$usr','$content','$postid','$node')");
+            echo "0";
+            // echo "Old time: $timestamp; This time: $time, difference: $difference";
+          }
+        }
+
       }
       elseif ($_POST["type"] == "edit") {
         $conn = new mysqli("localhost","root","root","project");
@@ -63,6 +81,6 @@ session_start();
     }
   }
   else {
-    header("location:../index.php");
+    header("location:../main.php");
   }
  ?>

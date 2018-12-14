@@ -29,10 +29,10 @@ if ($file == "session.php") {
 return "
 <div class='nav'>
   <div class='nav-item'>
-    <a href='http://projhost:8088/users'>USERS</a>
+    <a href='http://projhost:8088/users.php.php'>USERS</a>
   </div>
   <div class='nav-item'>
-    <a href='http://projhost:8088/index.php'>REGISTER</a>
+    <a href='http://projhost:8088/main.php'>REGISTER</a>
   </div>
 
 </div>
@@ -46,7 +46,7 @@ elseif ($dir == "users") {
       $img_div
       $display_div
       <div class='nav-item'>
-        <a href='http://projhost:8088/index.php/'>REGISTER</a>
+        <a href='http://projhost:8088/main.php/'>REGISTER</a>
       </div>
     </div>";
   }
@@ -55,7 +55,7 @@ elseif ($dir == "users") {
       $img_div
       $display_div
       <div class='nav-item'>
-        <a href='http://projhost:8088/index.php/'>REGISTER</a>
+        <a href='http://projhost:8088/main.php/'>REGISTER</a>
       </div>
     </div>";
   }
@@ -66,10 +66,10 @@ elseif ($dir == "Session") {
 
   }
 }
-elseif ($file == "/" || $file == "index.php") {
+elseif ($file == "/" || $file == "main.php") {
   if (isset($_SESSION['usr'])) {
     return "<div class='nav-item'>
-      <a href='http://projhost:8088/users/'>USERS</a>
+      <a href='http://projhost:8088/users.php/'>USERS</a>
     </div>
     $img_div
     $display_div
@@ -77,7 +77,7 @@ elseif ($file == "/" || $file == "index.php") {
   }
   else {
     return "<div class='nav-item'>
-      <a href='http://projhost:8088/index.php'>REGISTER</a>
+      <a href='http://projhost:8088/main.php'>REGISTER</a>
     </div>
     <div class='nav-item'>
       <a href='http://projhost:8088/login.php'>LOGIN</a>
