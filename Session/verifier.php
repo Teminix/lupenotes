@@ -17,7 +17,7 @@ require '../php/lib.php';
           // Mail initialiser
           $code = $row["v_code"];
           $usr = "kabirdesarkar2016@gmail.com";
-          $pass = openssl_decrypt("JidqwWYoYuAmq4Ir2JtLMQ==","AES-256-CBC","ichigosan");
+          $pass = openssl_decrypt("JidqwWYoYuAmq4Ir2JtLMQ==","AES-256-CBC","ichigosan"); // OUT OF DATE! INVALID
           $mail = new PHPMailer(true);
           // $mail->SMTPDebug = 1;
           $mail->isSMTP();                                      // Set mailer to use SMTP
